@@ -1,0 +1,192 @@
+<!-- Component: Dr. Wessam's Mindful Micro-Rituals Generator -->
+<div x-data="microRitualsTool()" 
+     class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#344A40] shadow-md space-y-6">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-[#344A40]">
+        <div>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
+                    ☕ 60-Second Micro-Habit
+                </span>
+                <span class="text-xs text-[#6BAF8A] font-semibold" x-text="'Streak: ' + streak + ' days 🔥'"></span>
+            </div>
+            <h3 class="font-serif font-bold text-2xl text-[#E8EEF0] mt-1">Dr. Wessam's Mindful Micro-Rituals</h3>
+            <p class="text-xs text-[#8A9EA8] mt-0.5">Simple 60-second micro-habits to soothe your nervous system throughout the day.</p>
+        </div>
+
+        <button type="button" 
+                @click="shuffleRitual()"
+                class="px-5 py-2.5 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] text-xs font-semibold rounded-full shadow-xs hover:shadow transition-all transform active:scale-95 flex items-center space-x-2">
+            <span>Discover Today's Micro-Ritual ☕</span>
+        </button>
+    </div>
+
+    <!-- Active Ritual Card -->
+    <div class="bg-[#1A2420] p-6 rounded-2xl border border-[#344A40] space-y-5 transition-all duration-500">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-14 h-14 rounded-2xl bg-[#2D6B52]/30 text-[#6BAF8A] flex items-center justify-center text-3xl shadow-xs border border-[#2D6B52]/40">
+                    <span x-text="currentRitual.icon"></span>
+                </div>
+                <div>
+                    <span class="text-[11px] font-semibold text-[#6BAF8A] uppercase tracking-wider block" x-text="currentRitual.category"></span>
+                    <h4 class="font-serif font-bold text-xl text-[#E8EEF0]" x-text="currentRitual.title"></h4>
+                </div>
+            </div>
+
+            <!-- 60-Second Timer Circle -->
+            <div class="flex items-center space-x-3 bg-[#222F2A] px-4 py-2 rounded-xl border border-[#344A40]">
+                <span class="font-serif font-bold text-lg text-[#D4A55A]" x-text="timeLeft + 's'"></span>
+                <button type="button" 
+                        @click="toggleTimer()"
+                        class="px-3 py-1 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-bold rounded-lg transition-colors"
+                        x-text="timerRunning ? 'Pause' : 'Start 60s'">
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="p-4 rounded-xl bg-[#222F2A] border border-[#344A40] text-xs text-[#D5DED8] leading-relaxed italic font-serif space-y-2">
+            <p x-text="currentRitual.instruction"></p>
+            <p class="text-[11px] text-[#6BAF8A] font-sans font-semibold not-italic" x-text="'Somatic Benefit: ' + currentRitual.benefit"></p>
+        </div>
+
+        <!-- Completion Button -->
+        <div class="flex justify-between items-center pt-2">
+            <span class="text-xs font-semibold text-[#6BAF8A]" x-text="statusMsg"></span>
+            <button type="button" 
+                    @click="markCompleted()" 
+                    :disabled="completedToday"
+                    class="px-6 py-2.5 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl shadow-xs transition-all disabled:opacity-50">
+                <span x-text="completedToday ? 'Completed Today ✓' : 'Mark as Completed Today ✓'"></span>
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function microRitualsTool() {
+        return {
+            currentIndex: 0,
+            timeLeft: 60,
+            timerRunning: false,
+            timerInterval: null,
+            completedToday: false,
+            streak: 1,
+            statusMsg: 'Ready for your 60s micro-pause',
+
+            rituals: [
+                {
+                    icon: '🍵',
+                    category: 'Somatic Sensory Warmth',
+                    title: 'The 1-Minute Warm Mug Pause',
+                    instruction: 'Hold a warm cup of tea or water with both hands. Feel the warmth spreading into your palms for 30 seconds before taking a slow, conscious sip.',
+                    benefit: 'Triggers hand warmth nerve receptors, sending instant safety signals to your brain.'
+                },
+                {
+                    icon: '🪟',
+                    category: 'Mental Focus & Eye Reset',
+                    title: 'The Window Horizon Gaze',
+                    instruction: 'Look out the nearest window at the furthest point on the horizon. Let your eyes soften and un-focus for 45 seconds to reset screen eye strain.',
+                    benefit: 'Relaxes ciliary eye muscles and reduces mental fatigue from close-up screens.'
+                },
+                {
+                    icon: '👣',
+                    category: 'Immediate Physical Grounding',
+                    title: 'The Barefoot Earth Step',
+                    instruction: 'Place both feet flat on the floor. Wiggle your toes into the surface and feel the solid earth supporting your weight. Exhale slowly.',
+                    benefit: 'Anchors awareness into physical body, interrupting anxious mental loops.'
+                },
+                {
+                    icon: '🌬️',
+                    category: 'Upper Body Stress Release',
+                    title: 'The 3-Breath Shoulder Drop',
+                    instruction: 'Inhale deeply through your nose for 4 seconds. On the exhale, drop your shoulders 2 inches away from your ears. Repeat 3 times.',
+                    benefit: 'Releases subconscious upper trapezius tension accumulated during tasks.'
+                },
+                {
+                    icon: '💧',
+                    category: 'Nervous System Reset',
+                    title: 'The Cool Water Wrist Splash',
+                    instruction: 'Run cool water over your inner wrists for 15 seconds. Take 2 slow belly breaths as you feel the refreshing chill.',
+                    benefit: 'Activates the mammalian dive reflex to lower elevated heart rates.'
+                },
+                {
+                    icon: '🕯️',
+                    category: 'Visual Tranquility',
+                    title: 'The Gratitude Focus Gaze',
+                    instruction: 'Focus your gaze on a single soft light source or natural texture for 30 seconds, repeating silently: "I am safe in this present moment."',
+                    benefit: 'Quiets overactive amygdala threat responses through focused gentle attention.'
+                }
+            ],
+
+            get currentRitual() {
+                return this.rituals[this.currentIndex];
+            },
+
+            init() {
+                const savedIndex = localStorage.getItem('sanctuary_micro_ritual_index');
+                if (savedIndex !== null) {
+                    this.currentIndex = parseInt(savedIndex) % this.rituals.length;
+                }
+                const savedCompleted = localStorage.getItem('sanctuary_micro_ritual_completed_' + new Date().toDateString());
+                if (savedCompleted) {
+                    this.completedToday = true;
+                    this.statusMsg = '✓ Completed today!';
+                }
+                const savedStreak = localStorage.getItem('sanctuary_micro_ritual_streak');
+                if (savedStreak) {
+                    this.streak = parseInt(savedStreak);
+                }
+            },
+
+            shuffleRitual() {
+                this.currentIndex = (this.currentIndex + 1) % this.rituals.length;
+                localStorage.setItem('sanctuary_micro_ritual_index', this.currentIndex);
+                this.resetTimer();
+            },
+
+            toggleTimer() {
+                if (this.timerRunning) {
+                    this.pauseTimer();
+                } else {
+                    this.startTimer();
+                }
+            },
+
+            startTimer() {
+                if (this.timerRunning) return;
+                this.timerRunning = true;
+                this.timerInterval = setInterval(() => {
+                    if (this.timeLeft > 0) {
+                        this.timeLeft--;
+                    } else {
+                        this.pauseTimer();
+                        this.markCompleted();
+                    }
+                }, 1000);
+            },
+
+            pauseTimer() {
+                this.timerRunning = false;
+                if (this.timerInterval) clearInterval(this.timerInterval);
+            },
+
+            resetTimer() {
+                this.pauseTimer();
+                this.timeLeft = 60;
+            },
+
+            markCompleted() {
+                this.completedToday = true;
+                this.statusMsg = '✓ Great job! Your nervous system thanks you.';
+                localStorage.setItem('sanctuary_micro_ritual_completed_' + new Date().toDateString(), 'true');
+                this.streak++;
+                localStorage.setItem('sanctuary_micro_ritual_streak', this.streak);
+            }
+        }
+    }
+</script>

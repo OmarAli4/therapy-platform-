@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Client Account | Sanctuary Therapy{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26]">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-2">
+        <h2 class="font-heading text-3xl font-bold text-[#E8EEF0]">Begin Your Journey</h2>
+        <p class="text-[#8A9EA8] text-sm">Create a safe, confidential client account with us.</p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-[#222F2A]/90 backdrop-blur-md py-8 px-6 shadow-md border border-[#344A40] sm:rounded-3xl sm:px-10">
+            <form class="space-y-4" method="POST">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-200 text-xs font-medium space-y-1">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p><strong>{{ field.label }}:</strong> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div>
+                    <label for="id_first_name" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">First Name</label>
+                    <input type="text" name="first_name" id="id_first_name" required value="{{ form.first_name.value|default:'' }}" class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none" placeholder="Your preferred name">
+                </div>
+
+                <div>
+                    <label for="id_last_name" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">Last Name (Optional)</label>
+                    <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}" class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none">
+                </div>
+
+                <div>
+                    <label for="id_email" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">Email Address</label>
+                    <input type="email" name="email" id="id_email" required value="{{ form.email.value|default:'' }}" class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none" placeholder="name@example.com">
+                </div>
+
+                <div>
+                    <label for="id_username" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">Username</label>
+                    <input type="text" name="username" id="id_username" required value="{{ form.username.value|default:'' }}" class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none" placeholder="e.g. sarah_j">
+                </div>
+
+                <div>
+                    <label for="id_password1" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" name="password1" id="id_password1" required class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none" placeholder="••••••••">
+                </div>
+
+                <div>
+                    <label for="id_password2" class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">Confirm Password</label>
+                    <input type="password" name="password2" id="id_password2" required class="w-full px-4 py-2.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none" placeholder="••••••••">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3.5 px-4 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-sm rounded-xl shadow-sm hover:shadow transition-all">
+                        Create Confidential Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center text-xs text-[#8A9EA8]">
+                Already registered? 
+                <a href="{% url 'login' %}" class="font-semibold text-[#6BAF8A] hover:underline">Log in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

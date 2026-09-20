@@ -1,0 +1,231 @@
+<!-- Feature 3: Sanctuary Atmospheric Soundscapes & Visualizer Component -->
+<div x-data="atmosphericSoundscapesTool()" 
+     class="bg-gradient-to-br from-emerald-950 via-slate-900 to-stone-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-800/40 relative overflow-hidden space-y-8">
+    
+    <!-- Ambient Animated Glow Particles -->
+    <div class="absolute inset-0 pointer-events-none opacity-30">
+        <div class="absolute -top-10 -left-10 w-72 h-72 bg-emerald-500/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute -bottom-10 -right-10 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl animate-float" style="animation-delay: 3s;"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="relative z-10 text-center space-y-2 max-w-xl mx-auto">
+        <span class="px-3.5 py-1 rounded-full bg-emerald-950 text-emerald-300 text-[11px] font-semibold uppercase tracking-wider border border-emerald-800/60 inline-block">
+            🌊 Somatic Audio & Visual Sanctuary
+        </span>
+        <h2 class="font-serif text-2xl sm:text-4xl font-bold text-stone-100 tracking-tight">
+            Atmospheric Soundscapes & Wave Visualizer
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-400 font-light">
+            Real-time synthesized ambient sounds paired with a gentle wave visualizer to soothe your nervous system.
+        </p>
+    </div>
+
+    <!-- Central Wave Visualizer Sphere -->
+    <div class="relative z-10 py-6 flex flex-col items-center justify-center space-y-6">
+        <div class="relative w-48 h-48 flex items-center justify-center">
+            <!-- Pulsing Outer Aura -->
+            <div class="absolute inset-0 rounded-full bg-emerald-500/20 transition-all duration-1000"
+                 :class="{
+                     'scale-125 bg-emerald-500/40 ring-4 ring-emerald-400/30 animate-pulse': isPlaying,
+                     'scale-100 opacity-30': !isPlaying
+                 }"></div>
+            
+            <!-- Center Sphere Icon -->
+            <div class="w-32 h-32 rounded-full bg-emerald-900/90 text-white font-serif font-bold text-base flex flex-col items-center justify-center shadow-2xl z-10 space-y-1 border border-emerald-700/60 transition-transform duration-500 transform hover:scale-105">
+                <span class="text-3xl" x-text="activeIcon"></span>
+                <span class="text-xs text-emerald-200 font-sans font-medium" x-text="activeLabel"></span>
+            </div>
+        </div>
+
+        <p class="text-xs text-emerald-300/80 italic text-center max-w-sm" x-text="soundDesc"></p>
+    </div>
+
+    <!-- Soundscape Selector Grid -->
+    <div class="relative z-10 max-w-xl mx-auto space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <!-- Rain -->
+            <button type="button" 
+                    @click="selectSound('rain')"
+                    class="p-4 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                    :class="activeSound === 'rain' ? 'border-emerald-500 bg-emerald-950/80 text-emerald-200 ring-2 ring-emerald-400' : 'border-stone-800 bg-stone-900/60 text-stone-300 hover:border-stone-700'">
+                <span class="text-2xl block mb-1">🌧️</span>
+                <span class="font-bold text-xs block">Forest Rain</span>
+                <span class="text-[10px] text-stone-400 block mt-0.5" x-text="activeSound === 'rain' ? 'Playing...' : 'Tap to Listen'"></span>
+            </button>
+
+            <!-- Ocean Waves -->
+            <button type="button" 
+                    @click="selectSound('waves')"
+                    class="p-4 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                    :class="activeSound === 'waves' ? 'border-teal-500 bg-teal-950/80 text-teal-200 ring-2 ring-teal-400' : 'border-stone-800 bg-stone-900/60 text-stone-300 hover:border-stone-700'">
+                <span class="text-2xl block mb-1">🌊</span>
+                <span class="font-bold text-xs block">Ocean Waves</span>
+                <span class="text-[10px] text-stone-400 block mt-0.5" x-text="activeSound === 'waves' ? 'Playing...' : 'Tap to Listen'"></span>
+            </button>
+
+            <!-- Singing Bowl Harmony -->
+            <button type="button" 
+                    @click="selectSound('bowl')"
+                    class="p-4 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                    :class="activeSound === 'bowl' ? 'border-amber-500 bg-amber-950/80 text-amber-200 ring-2 ring-amber-400' : 'border-stone-800 bg-stone-900/60 text-stone-300 hover:border-stone-700'">
+                <span class="text-2xl block mb-1">🪷</span>
+                <span class="font-bold text-xs block">432Hz Bowl</span>
+                <span class="text-[10px] text-stone-400 block mt-0.5" x-text="activeSound === 'bowl' ? 'Playing...' : 'Tap to Listen'"></span>
+            </button>
+
+        </div>
+
+        <!-- Master Sound Controls -->
+        <div x-show="isPlaying" x-transition class="p-4 rounded-2xl bg-stone-900/80 border border-stone-800 flex items-center justify-between gap-4 text-xs">
+            <div class="flex items-center space-x-2">
+                <span>🔊 Volume</span>
+                <input type="range" min="0" max="100" x-model="volume" @input="updateVolume()" class="w-24 accent-emerald-500 cursor-pointer">
+                <span class="text-stone-400 font-mono" x-text="volume + '%'"></span>
+            </div>
+
+            <button type="button" @click="stopSound()" class="text-rose-400 font-semibold hover:underline">
+                Stop Soundscape 🛑
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function atmosphericSoundscapesTool() {
+        return {
+            activeSound: 'off',
+            isPlaying: false,
+            volume: 40,
+            activeIcon: '🌊',
+            activeLabel: 'Select Sound',
+            soundDesc: 'Tap any soundscape above to generate real-time soothing audio frequency.',
+
+            audioCtx: null,
+            noiseNode: null,
+            oscNode: null,
+            gainNode: null,
+
+            selectSound(type) {
+                if (this.activeSound === type) {
+                    this.stopSound();
+                    return;
+                }
+                this.stopSound();
+                this.activeSound = type;
+                this.isPlaying = true;
+
+                if (type === 'rain') {
+                    this.activeIcon = '🌧️';
+                    this.activeLabel = 'Forest Rain';
+                    this.soundDesc = 'Soft raindrops falling gently onto lush forest leaves.';
+                    this.playPinkNoise(800);
+                } else if (type === 'waves') {
+                    this.activeIcon = '🌊';
+                    this.activeLabel = 'Ocean Waves';
+                    this.soundDesc = 'Rhythmic ocean tides swelling and receding on quiet sands.';
+                    this.playPinkNoise(350);
+                } else if (type === 'bowl') {
+                    this.activeIcon = '🪷';
+                    this.activeLabel = '432Hz Bowl';
+                    this.soundDesc = 'Pure 432Hz harmonic tone frequency to quiet racing thoughts.';
+                    this.playTone(432);
+                }
+            },
+
+            playPinkNoise(filterFreq) {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.audioCtx = new AudioCtx();
+
+                    const bufferSize = this.audioCtx.sampleRate * 5;
+                    const noiseBuffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+
+                    for (let i = 0; i < bufferSize; i++) {
+                        let white = Math.random() * 2 - 1;
+                        b0 = 0.99886 * b0 + white * 0.0555179;
+                        b1 = 0.99332 * b1 + white * 0.0750759;
+                        b2 = 0.96900 * b2 + white * 0.1538520;
+                        b3 = 0.86650 * b3 + white * 0.3104856;
+                        b4 = 0.55000 * b4 + white * 0.5329522;
+                        b5 = -0.7616 * b5 - white * 0.0168980;
+                        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                        output[i] *= 0.05;
+                        b6 = white * 0.115926;
+                    }
+
+                    this.noiseNode = this.audioCtx.createBufferSource();
+                    this.noiseNode.buffer = noiseBuffer;
+                    this.noiseNode.loop = true;
+
+                    const filter = this.audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = filterFreq;
+
+                    this.gainNode = this.audioCtx.createGain();
+                    this.gainNode.gain.value = this.volume / 100 * 0.3;
+
+                    this.noiseNode.connect(filter);
+                    filter.connect(this.gainNode);
+                    this.gainNode.connect(this.audioCtx.destination);
+
+                    this.noiseNode.start();
+                } catch(e) {
+                    console.error("Audio error:", e);
+                }
+            },
+
+            playTone(freq) {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.audioCtx = new AudioCtx();
+
+                    this.oscNode = this.audioCtx.createOscillator();
+                    this.oscNode.type = 'sine';
+                    this.oscNode.frequency.value = freq;
+
+                    this.gainNode = this.audioCtx.createGain();
+                    this.gainNode.gain.value = this.volume / 100 * 0.15;
+
+                    this.oscNode.connect(this.gainNode);
+                    this.gainNode.connect(this.audioCtx.destination);
+
+                    this.oscNode.start();
+                } catch(e) {
+                    console.error("Tone error:", e);
+                }
+            },
+
+            updateVolume() {
+                if (this.gainNode && this.audioCtx) {
+                    const targetGain = (this.volume / 100) * (this.activeSound === 'bowl' ? 0.15 : 0.3);
+                    this.gainNode.gain.setValueAtTime(targetGain, this.audioCtx.currentTime);
+                }
+            },
+
+            stopSound() {
+                if (this.noiseNode) {
+                    try { this.noiseNode.stop(); } catch(e){}
+                    this.noiseNode = null;
+                }
+                if (this.oscNode) {
+                    try { this.oscNode.stop(); } catch(e){}
+                    this.oscNode = null;
+                }
+                if (this.audioCtx) {
+                    try { this.audioCtx.close(); } catch(e){}
+                    this.audioCtx = null;
+                }
+                this.activeSound = 'off';
+                this.isPlaying = false;
+                this.activeIcon = '🌊';
+                this.activeLabel = 'Select Sound';
+                this.soundDesc = 'Tap any soundscape above to generate real-time soothing audio frequency.';
+            }
+        }
+    }
+</script>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Self-Paced Courses | Sanctuary Therapy{% endblock %}
+
+{% block content %}
+<div class="py-12 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        
+        <div class="text-center space-y-3 max-w-2xl mx-auto">
+            <span class="px-4 py-1.5 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-xs font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
+                Mindful Learning Library
+            </span>
+            <h1 class="font-heading text-3xl sm:text-4xl font-bold text-[#E8EEF0]">
+                Self-Paced Grounding & Healing Courses
+            </h1>
+            <p class="text-[#8A9EA8] text-sm leading-relaxed">
+                Take all the time you need. Each course offers gentle video guidance, reading materials, and safe private reflection prompts.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for course in courses %}
+            <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl border border-[#344A40] overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div class="h-48 bg-gradient-to-br from-[#2D6B52]/20 to-[#1A2420] p-6 flex flex-col justify-between relative border-b border-[#344A40]">
+                    <span class="px-3 py-1 bg-[#2D6B52]/30 text-[#6BAF8A] text-xs font-semibold rounded-full w-max shadow-xs border border-[#2D6B52]/40">
+                        Self-Paced
+                    </span>
+                    <h2 class="font-heading font-bold text-2xl text-[#E8EEF0] tracking-tight">{{ course.title }}</h2>
+                </div>
+
+                <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                    <p class="text-[#8A9EA8] text-sm leading-relaxed">{{ course.description }}</p>
+
+                    <div class="space-y-3 pt-4 border-t border-[#344A40]">
+                        <div class="flex justify-between items-center text-xs text-[#8A9EA8] font-medium">
+                            <span>{{ course.modules.count }} Modules</span>
+                            {% if user.is_authenticated %}
+                                <span class="font-bold text-[#6BAF8A]">Progress Tracked</span>
+                            {% endif %}
+                        </div>
+
+                        <a href="{% url 'course_detail' course.slug %}" class="w-full block py-3 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs text-center rounded-xl shadow-xs transition-colors">
+                            Explore Course Modules →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12 text-[#8A9EA8] text-sm">
+                No courses published yet. Check back soon!
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

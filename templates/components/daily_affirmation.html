@@ -1,0 +1,168 @@
+<!-- Daily Kindness Drop Component -->
+<div x-data="dailyAffirmationTool()" 
+     x-init="initAffirmation()"
+     class="bg-gradient-to-r from-emerald-900/90 via-emerald-950 to-stone-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-800/60 relative overflow-hidden space-y-4">
+    
+    <!-- Background Ambient Glow -->
+    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl -z-0"></div>
+
+    <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-emerald-800/60">
+        <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-full bg-emerald-800/80 text-emerald-200 text-xs font-semibold uppercase tracking-wider border border-emerald-700/50">
+                💌 Today's Kindness Drop
+            </span>
+            <span class="text-xs text-emerald-300/80" x-text="todayDate"></span>
+        </div>
+
+        <button type="button" 
+                @click="openPocketModal = true" 
+                class="text-xs font-semibold text-emerald-300 hover:text-white flex items-center space-x-1.5 bg-emerald-900/60 px-3 py-1.5 rounded-full border border-emerald-700/40 transition-colors">
+            <span>🔖 My Pocket Affirmations</span>
+            <span class="w-5 h-5 rounded-full bg-emerald-700 text-white text-[10px] flex items-center justify-center font-bold" x-text="savedPocket.length"></span>
+        </button>
+    </div>
+
+    <!-- Daily Affirmation Quote Display -->
+    <div class="relative z-10 space-y-3 py-2">
+        <blockquote class="font-serif italic text-xl sm:text-2xl text-stone-100 leading-relaxed max-w-2xl">
+            "<span x-text="currentAffirmation.text"></span>"
+        </blockquote>
+        <p class="text-xs text-emerald-300 font-medium" x-text="'— ' + currentAffirmation.author"></p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="relative z-10 pt-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-3">
+            <!-- Save to Pocket Button -->
+            <button type="button" 
+                    @click="toggleSaveToPocket()"
+                    class="px-4 py-2 rounded-full font-semibold transition-all flex items-center space-x-1.5"
+                    :class="isSavedInPocket ? 'bg-emerald-600 text-white' : 'bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 border border-emerald-600/50'">
+                <span x-text="isSavedInPocket ? '✓ Saved to Pocket' : '🔖 Save to My Pocket'"></span>
+            </button>
+
+            <!-- Copy Reminder Button -->
+            <button type="button" 
+                    @click="copyToClipboard()"
+                    class="px-4 py-2 bg-white/10 hover:bg-white/20 text-stone-200 rounded-full font-medium transition-colors flex items-center space-x-1.5">
+                <span x-text="copiedFeedback ? 'Copied with love! ❤️' : '📋 Copy Reminder'"></span>
+            </button>
+        </div>
+
+        <span class="text-[11px] text-emerald-300/70 italic">Updated daily for your self-care.</span>
+    </div>
+
+    <!-- Pocket Affirmations Drawer Modal -->
+    <div x-show="openPocketModal" 
+         x-transition x-cloak 
+         class="fixed inset-0 z-50 bg-stone-900/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div @click.away="openPocketModal = false" class="bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-slate-800 dark:text-amber-50 relative">
+            <button type="button" @click="openPocketModal = false" class="absolute top-6 right-6 text-stone-400 hover:text-stone-700 dark:hover:text-white p-2 text-sm">
+                ✕
+            </button>
+
+            <div class="space-y-1">
+                <span class="text-xs font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">Your Saved Collection</span>
+                <h3 class="font-serif text-2xl font-bold text-stone-900 dark:text-white">My Pocket Affirmations 🔖</h3>
+            </div>
+
+            <template x-if="savedPocket.length === 0">
+                <div class="text-center py-8 text-xs text-stone-500">
+                    Your pocket is empty! Click "Save to My Pocket" on daily affirmations to keep them here for safe keeping.
+                </div>
+            </template>
+
+            <div class="space-y-3 max-h-72 overflow-y-auto pr-1" x-show="savedPocket.length > 0">
+                <template x-for="(item, idx) in savedPocket" :key="idx">
+                    <div class="p-4 rounded-2xl bg-stone-50 dark:bg-slate-800 border border-stone-200/70 dark:border-slate-700 flex justify-between items-start gap-3">
+                        <div class="space-y-1">
+                            <p class="font-serif italic text-xs text-slate-800 dark:text-slate-100" x-text="'&ldquo;' + item.text + '&rdquo;'"></p>
+                            <p class="text-[10px] text-emerald-800 dark:text-emerald-400 font-semibold" x-text="'— ' + item.author"></p>
+                        </div>
+                        <button type="button" @click="removeFromPocket(idx)" class="text-stone-400 hover:text-rose-600 text-xs p-1">
+                            ✕
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <div class="text-right pt-2 border-t border-stone-100 dark:border-slate-800">
+                <button type="button" @click="openPocketModal = false" class="px-5 py-2 bg-emerald-800 text-white text-xs font-semibold rounded-xl">
+                    Close Pocket
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function dailyAffirmationTool() {
+        return {
+            todayDate: '',
+            currentAffirmation: {},
+            savedPocket: [],
+            isSavedInPocket: false,
+            copiedFeedback: false,
+            openPocketModal: false,
+
+            affirmationsList: [
+                { text: "You don't need to earn rest. Your worth is inherent and unchanging.", author: "Sanctuary Daily Reminder" },
+                { text: "You are allowed to take up space, speak your truth, and move at your own pace.", author: "Self-Compassion Principle" },
+                { text: "Whatever you are feeling right now is valid. Take a deep breath and give yourself grace.", author: "Mindful Anchor" },
+                { text: "Healing is not linear. Celebrating your quiet progress is enough for today.", author: "Somatic Wisdom" },
+                { text: "You do not have to carry the weight of the entire world on your shoulders.", author: "Sanctuary Daily Reminder" },
+                { text: "Your boundaries are an act of self-love, not selfishness.", author: "Emotional Wellness Rule" },
+                { text: "Resting is an act of courage in a world that demands constant busyness.", author: "Mindful Anchor" }
+            ],
+
+            initAffirmation() {
+                const today = new Date();
+                this.todayDate = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                // Deterministic daily pick
+                const dayIndex = (today.getFullYear() + today.getMonth() * 30 + today.getDate()) % this.affirmationsList.length;
+                this.currentAffirmation = this.affirmationsList[dayIndex];
+
+                // Load saved pocket
+                const saved = localStorage.getItem('sanctuary_pocket_affirmations');
+                if (saved) {
+                    try {
+                        this.savedPocket = JSON.parse(saved);
+                    } catch(e) {
+                        this.savedPocket = [];
+                    }
+                }
+                this.checkIfSaved();
+            },
+
+            checkIfSaved() {
+                this.isSavedInPocket = this.savedPocket.some(item => item.text === this.currentAffirmation.text);
+            },
+
+            toggleSaveToPocket() {
+                if (this.isSavedInPocket) {
+                    this.savedPocket = this.savedPocket.filter(item => item.text !== this.currentAffirmation.text);
+                } else {
+                    this.savedPocket.push(this.currentAffirmation);
+                }
+                localStorage.setItem('sanctuary_pocket_affirmations', JSON.stringify(this.savedPocket));
+                this.checkIfSaved();
+            },
+
+            removeFromPocket(idx) {
+                this.savedPocket.splice(idx, 1);
+                localStorage.setItem('sanctuary_pocket_affirmations', JSON.stringify(this.savedPocket));
+                this.checkIfSaved();
+            },
+
+            copyToClipboard() {
+                const textToCopy = `"${this.currentAffirmation.text}" — ${this.currentAffirmation.author}`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    this.copiedFeedback = true;
+                    setTimeout(() => { this.copiedFeedback = false; }, 2500);
+                });
+            }
+        }
+    }
+</script>

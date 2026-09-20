@@ -1,0 +1,68 @@
+<footer class="bg-[#151F1B] text-[#8A9EA8] pt-16 pb-12 border-t border-[#243530]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <!-- Brand Column -->
+            <div class="md:col-span-2 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#2D6B52] text-emerald-50 flex items-center justify-center border border-[#3D8A6B]/40 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12c1.2-1.5 2.8-1.8 3.5-0.8m-3.5 0.8c-1.2-1.5-2.8-1.8-3.5-0.8m3.5 0.8v3.2" class="text-[#6BAF8A]"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-2xl text-[#E8EEF0] tracking-tight block">Sanctuary</span>
+                        <span class="text-xs text-[#6BAF8A] font-semibold tracking-wide">Therapy & Mindful Growth</span>
+                    </div>
+                </div>
+                <p class="text-[#7A9488] text-sm max-w-md leading-relaxed">
+                    A safe, non-judgmental space dedicated to compassionate therapy, grounding education, and self-paced personal growth. You don't have to carry everything alone.
+                </p>
+                <div class="flex items-center space-x-2 pt-2">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#162D24] text-[#6BAF8A] border border-[#2D6B52]/40">
+                        <span class="w-2 h-2 rounded-full bg-[#6BAF8A] mr-2 animate-pulse"></span>
+                        100% Confidential & Secure Space
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="space-y-3">
+                <h4 class="font-serif font-semibold text-[#E8EEF0] text-base">Quick Navigation</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="{% url 'landing' %}" class="hover:text-[#6BAF8A] transition-colors">Home & Sanctuary</a></li>
+                    <li><a href="{% url 'calm_space' %}" class="hover:text-[#6BAF8A] transition-colors">🕊️ Open Calming Room</a></li>
+                    <li><a href="{% url 'book_session' %}" class="hover:text-[#6BAF8A] transition-colors">Book a Private Session</a></li>
+                    <li><a href="{% url 'course_list' %}" class="hover:text-[#6BAF8A] transition-colors">Self-Paced Learning</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_therapist %}
+                            <li><a href="{% url 'therapist_dashboard' %}" class="hover:text-[#6BAF8A] transition-colors">Therapist Portal</a></li>
+                        {% else %}
+                            <li><a href="{% url 'dashboard' %}" class="hover:text-[#6BAF8A] transition-colors">Client Dashboard</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li><a href="{% url 'login' %}" class="hover:text-[#6BAF8A] transition-colors">Client Sign In</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Contact & Reassurance -->
+            <div class="space-y-3">
+                <h4 class="font-serif font-semibold text-[#E8EEF0] text-base">Practice Hours</h4>
+                <p class="text-xs text-[#7A9488] leading-relaxed">
+                    Monday – Friday: 9:00 AM – 5:00 PM EST<br>
+                    Weekend appointments available upon request.
+                </p>
+                <div class="pt-2 text-xs text-[#7A9488] border-t border-[#243530]">
+                    <p class="font-semibold text-[#A8BFB2] mb-1">In Crisis?</p>
+                    <p>If you are experiencing an immediate mental health emergency, please call 988 (Lifeline) or visit your nearest emergency center.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-[#243530] pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#7A9488]">
+            <p>&copy; {% now "Y" %} Sanctuary Therapy Practice. All rights reserved.</p>
+            <p class="mt-2 md:mt-0">Designed with empathy, calm, and care.</p>
+        </div>
+    </div>
+</footer>

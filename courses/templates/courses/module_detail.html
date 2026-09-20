@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ module.title }} | {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="py-10 bg-stone-50 min-h-screen" x-data="moduleViewer({{ module.id }}, {{ is_completed|yesno:'true,false' }})">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        <!-- Breadcrumb & Top Controls -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-stone-200/70 shadow-xs">
+            <div class="space-y-1">
+                <a href="{% url 'course_detail' course.slug %}" class="text-xs font-semibold text-emerald-800 hover:underline inline-flex items-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    <span>Back to {{ course.title }}</span>
+                </a>
+                <h1 class="font-heading text-2xl font-bold text-slate-800">
+                    Module {{ module.order }}: {{ module.title }}
+                </h1>
+            </div>
+
+            <!-- Completion Toggle Button -->
+            <button @click="toggleCompletion()" 
+                    class="px-5 py-2.5 rounded-2xl font-semibold text-xs transition-all flex items-center space-x-2"
+                    :class="completed ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span x-text="completed ? 'Module Completed ✓' : 'Mark as Complete'"></span>
+            </button>
+        </div>
+
+        <!-- Audio-Guided Course Introduction ("Therapist Voice Note") Widget -->
+        <div class="bg-gradient-to-r from-emerald-900 to-emerald-950 text-white p-6 rounded-3xl border border-emerald-800 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <button type="button" 
+                        @click="toggleAudio()"
+                        class="w-12 h-12 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg flex-shrink-0 transition-transform active:scale-95">
+                    <template x-if="!isPlaying">
+                        <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </template>
+                    <template x-if="isPlaying">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </template>
+                </button>
+                <div class="space-y-0.5">
+                    <span class="text-[11px] font-semibold text-emerald-300 uppercase tracking-wider block">
+                        🎧 Gentle Voice Guidance (0:35)
+                    </span>
+                    <p class="font-heading font-bold text-base text-white">
+                        A quick message from Dr. Elena before you begin
+                    </p>
+                    <p class="text-xs text-emerald-200/80 italic">
+                        "Welcome. Take a moment to settle in comfortably..."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Simulated audio wave visualizer -->
+            <div class="flex items-center space-x-1 h-6">
+                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
+                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-4 animate-bounce' : 'h-3'"></span>
+                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
+                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-5 animate-bounce' : 'h-4'"></span>
+            </div>
+        </div>
+
+        <!-- Video Player Section (if video_url is present) -->
+        {% if module.video_url %}
+        <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-lg aspect-video border border-stone-800 relative">
+            <iframe class="w-full h-full" 
+                    src="{{ module.video_url }}" 
+                    title="{{ module.title }}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+        {% endif %}
+
+        <!-- Content & Reading Material Section -->
+        <div class="bg-white rounded-3xl p-8 border border-stone-200/70 shadow-xs space-y-6">
+            <h2 class="font-heading text-xl font-bold text-slate-800 border-b border-stone-100 pb-3">Lesson Material</h2>
+            <div class="prose prose-stone max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                {{ module.content }}
+            </div>
+        </div>
+
+        <!-- Tactile, Low-Pressure Reflection Journal Section -->
+        <div class="bg-white rounded-3xl p-8 border border-stone-200/70 shadow-xs space-y-6 relative">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-4 border-b border-stone-100">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <h2 class="font-heading font-bold text-xl text-slate-800">Your Private Reflection Journal</h2>
+                    </div>
+                    <p class="text-xs text-emerald-800 font-medium">
+                        "Your reflection entries are completely private to you."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Prompt Reveal Card (Low Pressure One-at-a-Time) -->
+            {% if module.reflection_prompt %}
+            <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-950 space-y-2 transition-all">
+                <div class="flex justify-between items-center text-xs font-bold text-emerald-900 uppercase tracking-wider">
+                    <span>Gentle Reflection Prompt</span>
+                    <button type="button" @click="promptRevealed = !promptRevealed" class="text-emerald-800 hover:underline">
+                        <span x-text="promptRevealed ? 'Hide Prompt' : 'Reveal Prompt 🌿'"></span>
+                    </button>
+                </div>
+
+                <div x-show="promptRevealed" x-transition class="text-xs leading-relaxed font-medium italic pt-1">
+                    "{{ module.reflection_prompt }}"
+                </div>
+                <div x-show="!promptRevealed" class="text-xs text-stone-500 italic">
+                    Click 'Reveal Prompt' when you feel ready to reflect on one thought at a time.
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="space-y-3">
+                <textarea x-model="journalText" 
+                          @input.debounce.800ms="saveJournal()"
+                          rows="6" 
+                          class="w-full p-4 rounded-2xl border border-stone-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm text-slate-800 bg-stone-50/50 outline-none transition-all leading-relaxed" 
+                          placeholder="Write your gentle thoughts here... Changes save quietly as you type."></textarea>
+                
+                <!-- Floating Auto-Save Reassurance Banner -->
+                <div class="flex justify-between items-center text-xs text-stone-400 pt-1">
+                    <span class="inline-flex items-center space-x-1.5" :class="saveStatusColor">
+                        <span class="w-2 h-2 rounded-full" :class="isSaving ? 'bg-amber-500 animate-ping' : 'bg-emerald-600'"></span>
+                        <span x-text="saveStatusText"></span>
+                    </span>
+
+                    <button type="button" @click="saveJournal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-slate-700 font-medium rounded-xl transition-colors">
+                        Save Now
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center pt-4">
+            {% if prev_module %}
+                <a href="{% url 'module_detail' course.slug prev_module.id %}" class="px-6 py-3 bg-white border border-stone-300 hover:bg-stone-50 text-slate-700 font-semibold text-xs rounded-2xl transition-colors">
+                    ← Previous: {{ prev_module.title }}
+                </a>
+            {% else %}
+                <div></div>
+            {% endif %}
+
+            {% if next_module %}
+                <a href="{% url 'module_detail' course.slug next_module.id %}" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-2xl shadow-xs transition-colors">
+                    Next: {{ next_module.title }} →
+                </a>
+            {% else %}
+                <a href="{% url 'course_detail' course.slug %}" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-2xl shadow-xs transition-colors">
+                    Finish Course Overview →
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function moduleViewer(moduleId, initialCompleted) {
+        return {
+            moduleId: moduleId,
+            completed: initialCompleted,
+            journalText: `{{ journal_entry.entry_text|escapejs }}`,
+            promptRevealed: true,
+            isPlaying: false,
+            isSaving: false,
+            saveStatusText: '✓ Saved securely to your private sanctuary (Only you can see this)',
+            saveStatusColor: 'text-emerald-700 font-medium',
+
+            toggleAudio() {
+                this.isPlaying = !this.isPlaying;
+            },
+
+            saveJournal() {
+                this.isSaving = true;
+                this.saveStatusText = 'Saving quietly...';
+                this.saveStatusColor = 'text-amber-600 font-semibold';
+
+                fetch("{% url 'save_journal_api' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        module_id: this.moduleId,
+                        entry_text: this.journalText
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.isSaving = false;
+                    if (data.status === 'success') {
+                        this.saveStatusText = `✓ Saved securely to your private sanctuary at ${data.updated_at}`;
+                        this.saveStatusColor = 'text-emerald-700 font-medium';
+                    } else {
+                        this.saveStatusText = 'Save error';
+                        this.saveStatusColor = 'text-rose-600 font-semibold';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error saving journal:', err);
+                    this.isSaving = false;
+                    this.saveStatusText = 'Save failed';
+                    this.saveStatusColor = 'text-rose-600 font-semibold';
+                });
+            },
+
+            toggleCompletion() {
+                fetch("{% url 'toggle_progress_api' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        module_id: this.moduleId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        this.completed = data.completed;
+                    }
+                });
+            }
+        }
+    }
+</script>
+{% endblock %}

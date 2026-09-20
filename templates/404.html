@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found | Sanctuary Therapy Practice{% endblock %}
+
+{% block content %}
+<div class="min-h-[75vh] flex flex-col justify-center py-16 bg-stone-50">
+    <div class="max-w-md mx-auto px-4 text-center space-y-6">
+        
+        <div class="w-20 h-20 rounded-full bg-emerald-100/80 text-emerald-800 flex items-center justify-center mx-auto shadow-xs border border-emerald-200">
+            <span class="text-3xl">🌿</span>
+        </div>
+
+        <div class="space-y-3">
+            <span class="px-3 py-1 rounded-full bg-stone-200 text-stone-700 text-xs font-semibold uppercase tracking-wider">
+                404 • Safe Space
+            </span>
+            <h1 class="font-heading text-3xl font-bold text-slate-800">
+                You've Wandered into an Empty Room
+            </h1>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                It looks like the page you were searching for isn't here. Take a deep breath—let's head back home together.
+            </p>
+        </div>
+
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="{% url 'landing' %}" class="w-full sm:w-auto px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
+                Return to Sanctuary Home
+            </a>
+            <a href="{% url 'book_session' %}" class="w-full sm:w-auto px-6 py-3 bg-white border border-stone-300 text-slate-700 hover:bg-stone-100 text-xs font-semibold rounded-xl transition-all">
+                Book a Session
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

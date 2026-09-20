@@ -1,0 +1,149 @@
+<!-- Feature 4: Wall of Gentle Kindness Component -->
+<div x-data='kindnessWallTool({{ kindness_messages_json|default:"[]" }})'
+     class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#344A40] shadow-md space-y-6">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-[#344A40]">
+        <div>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
+                    💌 Community Warmth
+                </span>
+            </div>
+            <h3 class="font-serif font-bold text-2xl text-[#E8EEF0] mt-1">Wall of Gentle Kindness</h3>
+            <p class="text-xs text-[#8A9EA8] mt-0.5">Short encouraging notes left by visitors to comfort strangers in need.</p>
+        </div>
+
+        <button type="button" 
+                @click="openModal = true"
+                class="px-5 py-2.5 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-full shadow-xs hover:shadow transition-all transform active:scale-95 flex items-center space-x-2">
+            <span>Leave a Note of Kindness 💌</span>
+        </button>
+    </div>
+
+    <!-- Pinboard Grid of Warm Paper Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {% for note in kindness_messages %}
+        <div class="bg-[#1A2420] p-5 rounded-2xl border border-[#344A40] shadow-xs hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between space-y-4 relative group"
+             x-data="{ likes: {{ note.likes_count }}, liked: false }">
+            
+            <div class="space-y-2">
+                <span class="text-xl block text-[#D4A55A]">“</span>
+                <p class="font-serif italic text-xs text-[#D5DED8] leading-relaxed">
+                    {{ note.text }}
+                </p>
+            </div>
+
+            <div class="pt-3 border-t border-[#344A40] flex items-center justify-between text-[11px]">
+                <span class="text-[#8A9EA8] font-medium italic">— {{ note.author_alias }}</span>
+                
+                <button type="button" 
+                        @click="if(!liked){ likes++; liked=true; fetch('/api/kindness-wall/like/{{ note.id }}/', {method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}'}}); }"
+                        class="flex items-center space-x-1 font-semibold transition-colors"
+                        :class="liked ? 'text-rose-400' : 'text-[#8A9EA8] hover:text-rose-400'">
+                    <span x-text="liked ? '💖' : '🤍'"></span>
+                    <span x-text="likes"></span>
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-4 text-center py-8 text-xs text-[#8A9EA8]">
+            No kindness notes posted yet. Be the first to leave a gentle word!
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal to Leave a Note -->
+    <div x-show="openModal" 
+         x-transition
+         x-cloak
+         class="fixed inset-0 z-50 bg-[#1A2420]/80 backdrop-blur-md flex items-center justify-center p-4">
+        
+        <div @click.away="openModal = false" 
+             class="bg-[#222F2A] border border-[#344A40] rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+            
+            <div class="flex justify-between items-center pb-2 border-b border-[#344A40]">
+                <h4 class="font-serif font-bold text-lg text-[#E8EEF0]">Leave a Gentle Note 💌</h4>
+                <button type="button" @click="openModal = false" class="text-[#8A9EA8] hover:text-[#E8EEF0] text-sm">✕</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">
+                        Your Message of Warmth:
+                    </label>
+                    <textarea x-model="newText" 
+                              rows="3" 
+                              maxlength="280"
+                              class="w-full p-3 rounded-xl border border-[#344A40] text-xs text-[#E8EEF0] bg-[#1A2420] outline-none font-serif italic focus:border-[#2D6B52]" 
+                              placeholder="e.g. You are doing enough today. Take a gentle breath..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-1">
+                        Your Sign-off Name (Optional):
+                    </label>
+                    <input type="text" 
+                           x-model="newAlias" 
+                           placeholder="e.g. A Fellow Traveler 🌿" 
+                           class="w-full p-2.5 rounded-xl border border-[#344A40] text-xs text-[#E8EEF0] bg-[#1A2420] outline-none focus:border-[#2D6B52]">
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-between items-center">
+                <span class="text-[11px] text-[#8A9EA8]" x-text="statusMsg"></span>
+                <button type="button" 
+                        @click="submitNote()" 
+                        :disabled="!newText.trim()"
+                        class="px-6 py-2 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl shadow-xs disabled:opacity-40">
+                    Post Note to Wall ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function kindnessWallTool() {
+        return {
+            openModal: false,
+            newText: '',
+            newAlias: '',
+            statusMsg: '',
+
+            submitNote() {
+                if (!this.newText.trim()) return;
+                this.statusMsg = 'Posting note...';
+
+                fetch('/api/kindness-wall/post/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        text: this.newText,
+                        author_alias: this.newAlias
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        this.statusMsg = '✓ Note posted!';
+                        setTimeout(() => {
+                            this.openModal = false;
+                            window.location.reload();
+                        }, 600);
+                    } else {
+                        this.statusMsg = 'Error posting note';
+                    }
+                })
+                .catch(err => {
+                    console.error('Note error:', err);
+                    this.statusMsg = 'Submission failed';
+                });
+            }
+        }
+    }
+</script>

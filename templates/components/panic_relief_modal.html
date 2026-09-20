@@ -1,0 +1,361 @@
+<!-- Floating Grounding Trigger Button & Global 4-7-8 Breathing Modal -->
+<div x-data="panicReliefTool()" @open-grounding.window="openModal()" x-cloak>
+    <!-- Floating Launcher Button (Available on Every Page) -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button type="button" 
+                @click="openModal()"
+                class="px-5 py-3 rounded-full bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold shadow-2xl backdrop-blur-md transition-all duration-300 flex items-center space-x-2.5 border border-[#3D8A6B]/40 group hover:scale-105 active:scale-95 animate-float">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#6BAF8A] animate-ping"></span>
+            <span>Need to Ground Right Now? 🌿</span>
+        </button>
+    </div>
+
+    <!-- Grounding Modal Backdrop -->
+    <div x-show="open" 
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0 backdrop-blur-none"
+         x-transition:enter-end="opacity-100 backdrop-blur-md"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 backdrop-blur-md"
+         x-transition:leave-end="opacity-0 backdrop-blur-none"
+         class="fixed inset-0 z-50 bg-[#1A2420]/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        
+        <!-- Modal Card -->
+        <div @click.away="closeModal()" 
+             x-show="open"
+             x-transition:enter="transition ease-out duration-500 transform"
+             x-transition:enter-start="opacity-0 scale-90 translate-y-8"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-300 transform"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-90 translate-y-8"
+             class="bg-[#222F2A] border border-[#344A40] rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative space-y-6 text-[#E8EEF0]">
+            
+            <!-- Close Button -->
+            <button type="button" @click="closeModal()" class="absolute top-6 right-6 text-[#8A9EA8] hover:text-white p-2 text-sm transition-transform hover:rotate-90 duration-300">
+                ✕
+            </button>
+
+            <!-- Header -->
+            <div class="text-center space-y-1">
+                <span class="px-3 py-1 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
+                    Somatic Grounding & Peace
+                </span>
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-[#E8EEF0]">
+                    Take All the Time You Need
+                </h2>
+                <p class="text-xs text-[#8A9EA8]">You are safe here. Select a gentle exercise below.</p>
+            </div>
+
+            <!-- Modal Navigation Tabs -->
+            <div class="flex justify-center space-x-2 border-b border-[#344A40] pb-3">
+                <button type="button" 
+                        @click="mode = 'breathe'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 transform active:scale-95"
+                        :class="mode === 'breathe' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#1A2420] text-[#8A9EA8] hover:bg-[#2A3832]'">
+                    🫁 4-7-8 Breathing
+                </button>
+                <button type="button" 
+                        @click="mode = 'sensory'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 transform active:scale-95"
+                        :class="mode === 'sensory' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#1A2420] text-[#8A9EA8] hover:bg-[#2A3832]'">
+                    👁️ 5-4-3-2-1 Sensory
+                </button>
+                <button type="button" 
+                        @click="mode = 'sounds'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 transform active:scale-95"
+                        :class="mode === 'sounds' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#1A2420] text-[#8A9EA8] hover:bg-[#2A3832]'">
+                    🎧 Calming Soundscape
+                </button>
+            </div>
+
+            <!-- TAB 1: 4-7-8 Breathing Loop -->
+            <div x-show="mode === 'breathe'" x-transition class="py-6 flex flex-col items-center justify-center space-y-6 text-center">
+                <!-- Breathing Visual Ring -->
+                <div class="relative w-48 h-48 flex items-center justify-center">
+                    <div class="absolute inset-0 rounded-full bg-[#2D6B52]/20 transition-transform duration-1000 ease-in-out"
+                         :class="{
+                             'scale-125 bg-[#2D6B52]/40 ring-4 ring-[#6BAF8A]/30': breathPhase === 'Inhale',
+                             'scale-125 bg-[#D4A55A]/30 ring-4 ring-[#D4A55A]/30': breathPhase === 'Hold',
+                             'scale-90 bg-[#2D6B52]/20': breathPhase === 'Exhale'
+                         }"></div>
+                    
+                    <div class="w-32 h-32 rounded-full bg-[#2D6B52] text-white font-serif font-bold text-sm flex flex-col items-center justify-center shadow-xl z-10 space-y-1 transition-all duration-700">
+                        <span class="text-lg" x-text="breathPhase"></span>
+                        <span class="text-xs text-[#6BAF8A] font-sans" x-text="breathCount + 's'"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-1 max-w-sm">
+                    <p class="text-xs font-semibold text-[#6BAF8A]" x-text="breathInstruction"></p>
+                    <p class="text-[11px] text-[#8A9EA8]">Completed cycles: <span class="font-bold text-[#E8EEF0]" x-text="cycleCount"></span></p>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button type="button" 
+                            @click="toggleBreathingTimer()"
+                            class="px-6 py-2.5 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] text-xs font-bold rounded-xl shadow-xs hover:shadow transition-all duration-200 transform active:scale-95"
+                            x-text="isBreathingRunning ? 'Pause Breathing' : 'Start 4-7-8 Loop'">
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: 5-4-3-2-1 Sensory Grounding -->
+            <div x-show="mode === 'sensory'" x-transition x-cloak class="py-4 space-y-6">
+                <div class="p-6 rounded-2xl bg-[#1A2420] border border-[#344A40] space-y-4 transition-all duration-300">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-[#6BAF8A] uppercase tracking-wider" x-text="'Step ' + currentSensoryStep + ' of 5'"></span>
+                        <span class="text-[#8A9EA8]" x-text="sensoryTitles[currentSensoryStep - 1]"></span>
+                    </div>
+
+                    <h3 class="font-serif font-bold text-xl text-[#E8EEF0]" x-text="sensoryPrompts[currentSensoryStep - 1]"></h3>
+                    <p class="text-xs text-[#D5DED8] leading-relaxed" x-text="sensoryDetails[currentSensoryStep - 1]"></p>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button type="button" 
+                            @click="prevSensoryStep()" 
+                            :disabled="currentSensoryStep === 1"
+                            class="px-4 py-2 border border-[#344A40] text-[#D5DED8] text-xs font-medium rounded-xl disabled:opacity-40 transition-all hover:bg-[#1A2420]">
+                        ← Previous
+                    </button>
+                    <button type="button" 
+                            @click="nextSensoryStep()" 
+                            class="px-6 py-2.5 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl shadow-xs hover:shadow transition-all transform active:scale-95">
+                        <span x-text="currentSensoryStep === 5 ? 'Finish Grounding ✓' : 'Next Step →'"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 3: Web Audio Calming Soundscape -->
+            <div x-show="mode === 'sounds'" x-transition x-cloak class="py-6 space-y-6 text-center">
+                <p class="text-xs text-[#8A9EA8] max-w-md mx-auto leading-relaxed">
+                    Listen to gentle ambient soundscapes generated in real-time to soothe your nervous system.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                    <button type="button" 
+                            @click="toggleSound('rain')"
+                            class="p-5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-1"
+                            :class="activeSound === 'rain' ? 'border-[#2D6B52] bg-[#2D6B52]/30 ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] bg-[#1A2420] hover:border-[#2D6B52]/40'">
+                        <span class="text-2xl block mb-1">🌧️</span>
+                        <span class="font-bold text-xs text-[#E8EEF0] block">Gentle Rainfall</span>
+                        <span class="text-[11px] text-[#8A9EA8]" x-text="activeSound === 'rain' ? 'Playing...' : 'Tap to Listen'"></span>
+                    </button>
+
+                    <button type="button" 
+                            @click="toggleSound('waves')"
+                            class="p-5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-1"
+                            :class="activeSound === 'waves' ? 'border-[#2D6B52] bg-[#2D6B52]/30 ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] bg-[#1A2420] hover:border-[#2D6B52]/40'">
+                        <span class="text-2xl block mb-1">🌊</span>
+                        <span class="font-bold text-xs text-[#E8EEF0] block">Ocean Breeze</span>
+                        <span class="text-[11px] text-[#8A9EA8]" x-text="activeSound === 'waves' ? 'Playing...' : 'Tap to Listen'"></span>
+                    </button>
+                </div>
+
+                <div x-show="activeSound !== 'off'" class="pt-2">
+                    <button type="button" @click="stopSound()" class="text-xs text-rose-400 font-semibold hover:underline">
+                        Stop Ambient Sound
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Exit Action -->
+            <div class="pt-4 border-t border-[#344A40] flex justify-between items-center">
+                <span class="text-[11px] text-[#8A9EA8]">Take your time. No rush.</span>
+                <button type="button" 
+                        @click="closeModalWithReassurance()" 
+                        class="px-6 py-2.5 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl transition-all transform active:scale-95">
+                    I Feel More Grounded Now 🌿
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function panicReliefTool() {
+        return {
+            open: false,
+            mode: 'breathe',
+            
+            // 4-7-8 Breathing state
+            breathPhase: 'Inhale',
+            breathCount: 4,
+            breathInstruction: 'Breathe in slowly through your nose...',
+            cycleCount: 0,
+            isBreathingRunning: false,
+            breathingInterval: null,
+
+            // 5-4-3-2-1 Sensory state
+            currentSensoryStep: 1,
+            sensoryTitles: ['5 Visuals', '4 Tastes/Touches', '3 Sounds', '2 Scents', '1 Affirmation'],
+            sensoryPrompts: [
+                'Look around: Name 5 things you can see.',
+                'Feel your space: Name 4 things you can physically touch.',
+                'Listen quietly: Name 3 gentle sounds around you.',
+                'Breathe in: Name 2 scents or fresh air details.',
+                'Self-Love: Say 1 comforting word to yourself.'
+            ],
+            sensoryDetails: [
+                'Notice soft lighting, natural wood grains, colors, or shadows in your room.',
+                'Feel your feet firmly planted on the floor, fabric of your sweater, or warm mug.',
+                'Listen for ambient breeze, soft clock ticks, or the calm sound of your own breathing.',
+                'Notice the aroma of tea, fresh air from an open window, or clean linen.',
+                'Gently repeat: "I am safe in this present moment. I am doing enough."'
+            ],
+
+            // Web Audio State
+            audioCtx: null,
+            activeSound: 'off',
+            noiseNode: null,
+            gainNode: null,
+
+            openModal() {
+                this.open = true;
+                this.startBreathingLoop();
+            },
+
+            closeModal() {
+                this.open = false;
+                this.stopBreathingLoop();
+                this.stopSound();
+            },
+
+            closeModalWithReassurance() {
+                this.closeModal();
+            },
+
+            // 4-7-8 Breathing Engine
+            startBreathingLoop() {
+                if (this.isBreathingRunning) return;
+                this.isBreathingRunning = true;
+                this.runBreathCycle();
+            },
+
+            stopBreathingLoop() {
+                this.isBreathingRunning = false;
+                if (this.breathingInterval) clearInterval(this.breathingInterval);
+            },
+
+            toggleBreathingTimer() {
+                if (this.isBreathingRunning) {
+                    this.stopBreathingLoop();
+                } else {
+                    this.startBreathingLoop();
+                }
+            },
+
+            runBreathCycle() {
+                let step = 0; // 0=Inhale (4s), 1=Hold (7s), 2=Exhale (8s)
+                this.breathPhase = 'Inhale';
+                this.breathCount = 4;
+                this.breathInstruction = 'Breathe in slowly through your nose (4s)...';
+
+                this.breathingInterval = setInterval(() => {
+                    if (!this.isBreathingRunning) return;
+
+                    this.breathCount--;
+                    if (this.breathCount <= 0) {
+                        step = (step + 1) % 3;
+                        if (step === 0) {
+                            this.breathPhase = 'Inhale';
+                            this.breathCount = 4;
+                            this.breathInstruction = 'Breathe in slowly through your nose (4s)...';
+                            this.cycleCount++;
+                        } else if (step === 1) {
+                            this.breathPhase = 'Hold';
+                            this.breathCount = 7;
+                            this.breathInstruction = 'Hold your breath gently. Stay still (7s)...';
+                        } else if (step === 2) {
+                            this.breathPhase = 'Exhale';
+                            this.breathCount = 8;
+                            this.breathInstruction = 'Exhale slowly through your mouth (8s)...';
+                        }
+                    }
+                }, 1000);
+            },
+
+            // Sensory Step Engine
+            nextSensoryStep() {
+                if (this.currentSensoryStep < 5) {
+                    this.currentSensoryStep++;
+                } else {
+                    this.currentSensoryStep = 1;
+                    this.mode = 'breathe';
+                }
+            },
+
+            prevSensoryStep() {
+                if (this.currentSensoryStep > 1) {
+                    this.currentSensoryStep--;
+                }
+            },
+
+            // Web Audio Synthesizer Engine
+            toggleSound(type) {
+                if (this.activeSound === type) {
+                    this.stopSound();
+                    return;
+                }
+                this.stopSound();
+                this.activeSound = type;
+
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.audioCtx = new AudioCtx();
+
+                    const bufferSize = this.audioCtx.sampleRate * 5;
+                    const noiseBuffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+
+                    for (let i = 0; i < bufferSize; i++) {
+                        let white = Math.random() * 2 - 1;
+                        b0 = 0.99886 * b0 + white * 0.0555179;
+                        b1 = 0.99332 * b1 + white * 0.0750759;
+                        b2 = 0.96900 * b2 + white * 0.1538520;
+                        b3 = 0.86650 * b3 + white * 0.3104856;
+                        b4 = 0.55000 * b4 + white * 0.5329522;
+                        b5 = -0.7616 * b5 - white * 0.0168980;
+                        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                        output[i] *= 0.05;
+                        b6 = white * 0.115926;
+                    }
+
+                    this.noiseNode = this.audioCtx.createBufferSource();
+                    this.noiseNode.buffer = noiseBuffer;
+                    this.noiseNode.loop = true;
+
+                    const filter = this.audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = type === 'rain' ? 800 : 400;
+
+                    this.gainNode = this.audioCtx.createGain();
+                    this.gainNode.gain.value = 0.2;
+
+                    this.noiseNode.connect(filter);
+                    filter.connect(this.gainNode);
+                    this.gainNode.connect(this.audioCtx.destination);
+
+                    this.noiseNode.start();
+                } catch (e) {
+                    console.error("Audio Context error:", e);
+                }
+            },
+
+            stopSound() {
+                if (this.noiseNode) {
+                    try { this.noiseNode.stop(); } catch(e){}
+                    this.noiseNode = null;
+                }
+                if (this.audioCtx) {
+                    try { this.audioCtx.close(); } catch(e){}
+                    this.audioCtx = null;
+                }
+                this.activeSound = 'off';
+            }
+        }
+    }
+</script>

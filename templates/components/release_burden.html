@@ -1,0 +1,223 @@
+<!-- Feature 1: Intuitive "Release Your Burden" Visual Ritual Component -->
+<div x-data="releaseBurdenTool()" 
+     class="bg-gradient-to-b from-[#141F1C] via-[#1B2925] to-[#253934] text-stone-100 rounded-3xl p-6 sm:p-10 shadow-xl border border-emerald-800/30 relative overflow-hidden space-y-6">
+    
+    <!-- Twinkling Star Ambient Background Elements -->
+    <div class="absolute inset-0 pointer-events-none opacity-30">
+        <div class="absolute top-8 left-12 w-1.5 h-1.5 bg-amber-100 rounded-full animate-ping"></div>
+        <div class="absolute top-20 right-16 w-2 h-2 bg-emerald-200 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-12 left-1/3 w-1 h-1 bg-white rounded-full animate-ping"></div>
+        <div class="absolute top-1/3 right-1/4 w-2 h-2 bg-amber-50 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-8 right-10 w-1.5 h-1.5 bg-emerald-200 rounded-full animate-ping"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="relative z-10 text-center space-y-2 max-w-xl mx-auto">
+        <span class="px-3.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 text-[11px] font-semibold uppercase tracking-wider border border-emerald-800/50 inline-block">
+            🍃 Interactive Release Ritual
+        </span>
+        <h2 class="font-serif text-2xl sm:text-4xl font-bold text-stone-100 tracking-tight">
+            Release Your Burden
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-300 font-light">
+            Select or type what is weighing on you today. Watch it gently float away into the quiet sky.
+        </p>
+    </div>
+
+    <!-- STEP 1: Quick-Select Chips + Live Leaf Preview (Intuitive Flow) -->
+    <div x-show="step === 1" x-transition class="relative z-10 max-w-xl mx-auto space-y-6">
+        
+        <!-- 1-Tap Quick Burden Chips -->
+        <div class="space-y-2">
+            <label class="block text-xs font-semibold text-emerald-300 uppercase tracking-wider text-center">
+                1-Tap Quick Select What You Are Carrying:
+            </label>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <template x-for="chip in quickChips" :key="chip.id">
+                    <button type="button" 
+                            @click="selectChip(chip)"
+                            class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-300 transform active:scale-95"
+                            :class="burdenText === chip.text ? 'border-emerald-400 bg-emerald-800 text-amber-50 shadow-md ring-2 ring-emerald-300' : 'border-emerald-900/60 bg-[#16211E]/80 text-stone-300 hover:border-emerald-700'">
+                        <span x-text="chip.label"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Custom Input or Live Parchment Card -->
+        <div class="bg-[#1A2623]/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-900/60 shadow-inner space-y-3">
+            <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold text-emerald-300 uppercase tracking-wider">Your Written Burden:</span>
+                <span class="text-stone-400 italic">100% Private (Device-only)</span>
+            </div>
+
+            <textarea x-model="burdenText" 
+                      rows="3" 
+                      class="w-full p-3.5 rounded-xl border border-emerald-900/60 focus:border-emerald-500 text-xs text-stone-100 bg-[#121A18]/80 outline-none leading-relaxed font-serif italic" 
+                      placeholder="Or write custom thoughts here..."></textarea>
+        </div>
+
+        <!-- Metaphor Selection -->
+        <div class="space-y-2">
+            <label class="block text-xs font-semibold text-stone-300 uppercase tracking-wider text-center">
+                Choose Release Metaphor:
+            </label>
+            <div class="grid grid-cols-3 gap-3">
+                <button type="button" 
+                        @click="selectedMetaphor = 'leaf'"
+                        class="p-3 rounded-xl border text-center transition-all duration-300"
+                        :class="selectedMetaphor === 'leaf' ? 'border-emerald-500 bg-emerald-950/80 text-emerald-200 shadow-sm ring-2 ring-emerald-400' : 'border-emerald-900/50 bg-[#16211E]/70 text-stone-400 hover:border-emerald-700'">
+                    <span class="text-xl block mb-1">🍃</span>
+                    <span class="text-xs font-bold block">Autumn Leaf</span>
+                </button>
+
+                <button type="button" 
+                        @click="selectedMetaphor = 'lantern'"
+                        class="p-3 rounded-xl border text-center transition-all duration-300"
+                        :class="selectedMetaphor === 'lantern' ? 'border-amber-500 bg-amber-950/80 text-amber-200 shadow-sm ring-2 ring-amber-400' : 'border-emerald-900/50 bg-[#16211E]/70 text-stone-400 hover:border-emerald-700'">
+                    <span class="text-xl block mb-1">🏮</span>
+                    <span class="text-xs font-bold block">Sky Lantern</span>
+                </button>
+
+                <button type="button" 
+                        @click="selectedMetaphor = 'wave'"
+                        class="p-3 rounded-xl border text-center transition-all duration-300"
+                        :class="selectedMetaphor === 'wave' ? 'border-teal-500 bg-teal-950/80 text-teal-200 shadow-sm ring-2 ring-teal-400' : 'border-emerald-900/50 bg-[#16211E]/70 text-stone-400 hover:border-emerald-700'">
+                    <span class="text-xl block mb-1">🌊</span>
+                    <span class="text-xs font-bold block">Ocean Wave</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tactile 1-Click Release CTA -->
+        <div class="text-center pt-2">
+            <button type="button" 
+                    @click="startRelease()"
+                    :disabled="!burdenText.trim()"
+                    class="px-10 py-4 bg-emerald-700 hover:bg-emerald-800 text-stone-50 font-bold text-sm rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-40 flex items-center justify-center space-x-2 mx-auto">
+                <span>Blow Away into the Sky 💨🍃</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- STEP 2: The Visual Release Animation Canvas -->
+    <div x-show="step === 2" class="relative z-10 py-16 flex flex-col items-center justify-center min-h-[300px]">
+        <!-- Animated Floating Release Object -->
+        <div class="text-center space-y-4 transition-all duration-1000 transform"
+             :class="{
+                 'animate-leaf-float': selectedMetaphor === 'leaf' && isAnimating,
+                 'animate-lantern-rise': selectedMetaphor === 'lantern' && isAnimating,
+                 'animate-wave-wash': selectedMetaphor === 'wave' && isAnimating
+             }">
+            
+            <div class="w-24 h-24 rounded-full bg-emerald-900/60 backdrop-blur-md border border-emerald-500/40 flex items-center justify-center mx-auto shadow-2xl">
+                <span class="text-5xl" x-text="metaphorIcons[selectedMetaphor]"></span>
+            </div>
+
+            <blockquote class="font-serif italic text-base text-stone-100 max-w-sm mx-auto leading-relaxed bg-[#121A18]/80 p-4 rounded-xl border border-white/10 shadow-lg">
+                "<span x-text="burdenText"></span>"
+            </blockquote>
+        </div>
+    </div>
+
+    <!-- STEP 3: Reassurance & Relief -->
+    <div x-show="step === 3" x-transition class="relative z-10 text-center py-8 space-y-6 max-w-md mx-auto">
+        <div class="w-16 h-16 rounded-full bg-emerald-900/80 text-emerald-300 flex items-center justify-center mx-auto text-2xl border border-emerald-700/60 shadow-lg animate-bounce">
+            🕊️
+        </div>
+
+        <div class="space-y-2">
+            <h3 class="font-serif font-bold text-2xl text-stone-100">It is released.</h3>
+            <p class="text-xs text-stone-200 leading-relaxed font-light">
+                You do not have to carry this burden alone anymore. Take a deep, slow breath into your belly. Your hands are lighter now.
+            </p>
+        </div>
+
+        <div>
+            <button type="button" 
+                    @click="resetRitual()"
+                    class="px-6 py-2.5 bg-[#1A2623] hover:bg-[#253632] text-stone-200 text-xs font-semibold rounded-full border border-emerald-800 transition-all">
+                Release Another Burden 🍃
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* 🍃 Leaf Floating Keyframe */
+    @keyframes leafFloatAway {
+        0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+        50% { transform: translateY(-120px) translateX(40px) rotate(20deg) scale(0.8); opacity: 0.7; }
+        100% { transform: translateY(-280px) translateX(-30px) rotate(-35deg) scale(0.3); opacity: 0; filter: blur(6px); }
+    }
+    .animate-leaf-float {
+        animation: leafFloatAway 3.2s ease-in-out forwards;
+    }
+
+    /* 🏮 Sky Lantern Rising Keyframe */
+    @keyframes lanternRiseAway {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        50% { transform: translateY(-140px) scale(0.75); opacity: 0.8; }
+        100% { transform: translateY(-320px) scale(0.2); opacity: 0; filter: blur(8px); }
+    }
+    .animate-lantern-rise {
+        animation: lanternRiseAway 3.5s ease-in-out forwards;
+    }
+
+    /* 🌊 Ocean Wave Washing Keyframe */
+    @keyframes waveWashAway {
+        0% { transform: translateX(0) scale(1); opacity: 1; }
+        50% { transform: translateX(120px) scale(0.85); opacity: 0.6; }
+        100% { transform: translateX(300px) scale(0.4); opacity: 0; filter: blur(8px); }
+    }
+    .animate-wave-wash {
+        animation: waveWashAway 3.2s ease-in-out forwards;
+    }
+</style>
+
+<script>
+    function releaseBurdenTool() {
+        return {
+            step: 1,
+            burdenText: 'Overthinking & Racing Mind',
+            selectedMetaphor: 'leaf',
+            isAnimating: false,
+
+            quickChips: [
+                { id: 1, label: '🌧️ Overthinking', text: 'Overthinking & Racing Mind' },
+                { id: 2, label: '🌪️ Future Anxiety', text: 'Anxiety & Uncertainty About the Future' },
+                { id: 3, label: '🥱 Heavy Burnout', text: 'Work & Life Exhaustion' },
+                { id: 4, label: '😔 Self-Doubt', text: 'Self-Doubt & Emotional Pressure' }
+            ],
+
+            metaphorIcons: {
+                leaf: '🍃',
+                lantern: '🏮',
+                wave: '🌊'
+            },
+
+            selectChip(chip) {
+                this.burdenText = chip.text;
+            },
+
+            startRelease() {
+                if (!this.burdenText.trim()) return;
+                this.step = 2;
+                this.isAnimating = true;
+
+                setTimeout(() => {
+                    this.isAnimating = false;
+                    this.step = 3;
+                }, 3200);
+            },
+
+            resetRitual() {
+                this.step = 1;
+                this.burdenText = 'Overthinking & Racing Mind';
+                this.selectedMetaphor = 'leaf';
+                this.isAnimating = false;
+            }
+        }
+    }
+</script>

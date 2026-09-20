@@ -1,0 +1,455 @@
+{% extends 'base.html' %}
+
+{% block title %}My Sanctuary Dashboard | Client Portal{% endblock %}
+
+{% block content %}
+<div class="py-10 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-screen" x-data="clientDashboard()">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        <!-- Time-Aware Atmospheric Welcome & Micro Check-In Card -->
+        <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-8 border border-[#344A40] shadow-md transition-colors duration-500">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl bg-[#2D6B52]/30 text-[#6BAF8A] flex items-center justify-center font-serif font-bold text-xl shadow-xs border border-[#2D6B52]/40">
+                            {{ user.first_name|default:user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <!-- Dynamic Time-Aware Greeting -->
+                            <h1 class="font-serif text-2xl sm:text-3xl font-bold text-[#E8EEF0]">
+                                <span x-text="greetingText"></span>, {{ user.first_name|default:user.username }}
+                            </h1>
+                            <p class="text-xs text-[#8A9EA8] font-medium" x-text="greetingSubtext"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <a href="{% url 'book_session' %}" class="px-5 py-3 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] text-sm font-bold rounded-2xl shadow-xs hover:shadow transition-all flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        <span>Find a Time That Works for You</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3-Second Grounding Check-In Widget -->
+            <div class="pt-6 border-t border-[#344A40]">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <p class="text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider">
+                            3-Second Gentle Check-In
+                        </p>
+                        <p class="text-sm font-serif font-bold text-[#E8EEF0]">
+                            How is your energy feeling right now?
+                        </p>
+                    </div>
+
+                    <!-- Mood Pills -->
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="mood in moods" :key="mood.id">
+                            <button type="button" 
+                                    @click="selectMood(mood)"
+                                    class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-200"
+                                    :class="selectedMood && selectedMood.id === mood.id ? 'border-[#2D6B52] bg-[#2D6B52] text-white shadow-xs' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#6BAF8A]'">
+                                <span x-text="mood.emoji + ' ' + mood.label"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Emotional Response Banner -->
+                <div x-show="selectedMood" x-transition class="mt-4 p-4 rounded-2xl border border-[#344A40] bg-[#1A2420] text-xs font-medium leading-relaxed flex items-center space-x-3 text-[#E8EEF0]">
+                    <span class="text-lg" x-text="selectedMood ? selectedMood.emoji : ''"></span>
+                    <span x-text="selectedMood ? selectedMood.reassurance : ''"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Weekly Somatic Energy Tracker ("Sunlight & Shade") -->
+        <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#344A40] shadow-md space-y-6"
+             x-data='somaticEnergyTracker({{ weekly_chart|safe }}, "{{ today_energy_level }}")'>
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-[#344A40]">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
+                            🌿 Somatic Energy Tracker
+                        </span>
+                        <span class="text-xs text-[#8A9EA8]">Sunlight & Shade</span>
+                    </div>
+                    <h2 class="font-serif font-bold text-2xl text-[#E8EEF0] mt-1">Your Week in Sunlight & Shade</h2>
+                    <p class="text-xs text-[#8A9EA8] mt-0.5">Observe your emotional rhythm gently over time. All feelings belong.</p>
+                </div>
+
+                <div class="flex items-center space-x-2 bg-[#1A2420] px-3.5 py-1.5 rounded-full border border-[#344A40] text-xs font-medium text-[#D5DED8]">
+                    <span class="w-2 h-2 rounded-full bg-[#6BAF8A]"></span>
+                    <span x-text="statusMsg"></span>
+                </div>
+            </div>
+
+            <!-- 1-Tap Daily Energy Logger -->
+            <div class="space-y-3">
+                <p class="text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider">
+                    Log Today's Energy (1-Tap):
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button type="button" 
+                            @click="logEnergy('HOPEFUL')"
+                            class="p-3.5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                            :class="activeLevel === 'HOPEFUL' ? 'border-[#D4A55A] bg-[#D4A55A]/20 text-[#D4A55A] ring-2 ring-[#D4A55A]/40' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#D4A55A]'">
+                        <span class="text-xl block mb-0.5">☀️</span>
+                        <span class="font-bold text-xs block">Hopeful</span>
+                    </button>
+
+                    <button type="button" 
+                            @click="logEnergy('CALM')"
+                            class="p-3.5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                            :class="activeLevel === 'CALM' ? 'border-[#2D6B52] bg-[#2D6B52]/20 text-[#6BAF8A] ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#6BAF8A]'">
+                        <span class="text-xl block mb-0.5">🌿</span>
+                        <span class="font-bold text-xs block">Calm</span>
+                    </button>
+
+                    <button type="button" 
+                            @click="logEnergy('OVERWHELMED')"
+                            class="p-3.5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                            :class="activeLevel === 'OVERWHELMED' ? 'border-[#2D6B52] bg-[#2D6B52]/20 text-[#6BAF8A] ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#6BAF8A]'">
+                        <span class="text-xl block mb-0.5">🌧️</span>
+                        <span class="font-bold text-xs block">Overwhelmed</span>
+                    </button>
+
+                    <button type="button" 
+                            @click="logEnergy('EXHAUSTED')"
+                            class="p-3.5 rounded-2xl border text-center transition-all duration-300 transform hover:-translate-y-0.5"
+                            :class="activeLevel === 'EXHAUSTED' ? 'border-[#344A40] bg-[#344A40]/40 text-[#D5DED8] ring-2 ring-[#344A40]' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#8A9EA8]'">
+                        <span class="text-xl block mb-0.5">😴</span>
+                        <span class="font-bold text-xs block">Exhausted</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7-Day Visual Rhythm Bar Chart -->
+            <div class="pt-4 space-y-3">
+                <div class="flex justify-between items-center text-xs text-[#8A9EA8]">
+                    <span class="font-medium">Past 7 Days Rhythm:</span>
+                    <span class="italic">Height reflects energy intensity</span>
+                </div>
+
+                <div class="h-36 bg-[#1A2420] rounded-2xl p-4 border border-[#344A40] flex items-end justify-between gap-2">
+                    <template x-for="(day, idx) in chart" :key="idx">
+                        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end group relative">
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-[#2A3832] text-white text-[10px] px-2 py-1 rounded shadow-md pointer-events-none whitespace-nowrap z-20"
+                                 x-text="day.logged ? day.label : 'No log'"></div>
+
+                            <div class="w-full max-w-[28px] rounded-t-xl transition-all duration-700 ease-out shadow-xs border border-white/10"
+                                 :class="day.bg_class"
+                                 :style="'height: ' + day.height + '%'"></div>
+
+                            <div class="text-[11px] font-semibold flex items-center gap-1" :class="day.is_today ? 'text-[#6BAF8A] font-bold' : 'text-[#8A9EA8]'">
+                                <span x-text="day.day_name"></span>
+                                <span x-text="day.emoji" class="text-xs"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Non-Judgmental Weekly Insight -->
+            <div class="p-4 rounded-2xl bg-[#2D6B52]/20 border border-[#2D6B52]/40 text-xs text-[#E8EEF0] leading-relaxed italic">
+                "Your energy naturally shifts like the weather. There are no 'good' or 'bad' days—only moments of sunlight, rain, and quiet rest."
+            </div>
+
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Upcoming Sessions & Comfort Checklist (7 Cols) -->
+            <div class="lg:col-span-7 space-y-8">
+                
+                <!-- Comfort Checklist Widget -->
+                {% include 'components/comfort_checklist.html' %}
+
+                <!-- Upcoming Sessions Card -->
+                <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-[#344A40]">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-[#6BAF8A] animate-pulse"></div>
+                            <h2 class="font-serif font-bold text-xl text-[#E8EEF0]">Upcoming Sessions</h2>
+                        </div>
+                        <span class="text-xs text-[#8A9EA8] font-medium">{{ upcoming_appointments.count }} Booked</span>
+                    </div>
+
+                    {% if upcoming_appointments %}
+                        <div class="space-y-4">
+                            {% for appt in upcoming_appointments %}
+                            <div class="p-5 rounded-2xl bg-[#1A2420] border border-[#344A40] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-[#2D6B52] transition-colors">
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#2D6B52]/30 text-[#6BAF8A]">
+                                            {{ appt.get_focus_area_display }}
+                                        </span>
+                                        <span class="text-xs text-[#8A9EA8] font-medium">45 Mins</span>
+                                    </div>
+                                    <h3 class="font-serif font-bold text-lg text-[#E8EEF0]">
+                                        {{ appt.date|date:"F j, Y (l)" }}
+                                    </h3>
+                                    <p class="text-xs text-[#6BAF8A] font-semibold flex items-center">
+                                        <svg class="w-4 h-4 mr-1 text-[#6BAF8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        {{ appt.start_time|time:"g:i A" }} – {{ appt.end_time|time:"g:i A" }}
+                                    </p>
+                                    {% if appt.notes_by_client %}
+                                        <p class="text-xs text-[#8A9EA8] bg-[#222F2A] p-2 rounded-xl border border-[#344A40] mt-2">
+                                            <span class="font-semibold text-[#E8EEF0]">Your Focus Note:</span> {{ appt.notes_by_client }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex flex-col sm:items-end space-y-2 w-full sm:w-auto">
+                                    <span class="px-3 py-1 text-xs font-bold rounded-lg bg-[#2D6B52] text-white text-center">
+                                        Confirmed
+                                    </span>
+                                    <form method="post" action="{% url 'cancel_appointment' appt.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" onclick="return confirm('Are you sure you wish to cancel this session slot?');" class="text-xs text-rose-400 hover:text-rose-300 font-medium hover:underline">
+                                            Cancel Session
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-10 space-y-3">
+                            <div class="w-12 h-12 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] flex items-center justify-center mx-auto border border-[#2D6B52]/40">
+                                🌿
+                            </div>
+                            <p class="text-[#E8EEF0] font-serif font-semibold text-base">No upcoming sessions scheduled.</p>
+                            <p class="text-[#8A9EA8] text-xs max-w-sm mx-auto">When you feel ready, we’re right here to support you.</p>
+                            <a href="{% url 'book_session' %}" class="inline-block text-xs font-bold text-[#6BAF8A] hover:underline pt-1">
+                                Find a calm time slot →
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Past Sessions -->
+                {% if past_appointments %}
+                <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 border border-[#344A40] shadow-md space-y-4">
+                    <h3 class="font-serif font-bold text-lg text-[#E8EEF0] border-b border-[#344A40] pb-3">Past Session History</h3>
+                    <div class="divide-y divide-[#344A40]">
+                        {% for appt in past_appointments %}
+                        <div class="py-3 flex justify-between items-center text-xs">
+                            <div>
+                                <p class="font-semibold text-[#E8EEF0]">{{ appt.date|date:"M j, Y" }} @ {{ appt.start_time|time:"g:i A" }}</p>
+                                <p class="text-[#8A9EA8]">{{ appt.get_focus_area_display }}</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-medium 
+                                {% if appt.status == 'COMPLETED' %} bg-[#2D6B52]/30 text-[#6BAF8A] 
+                                {% else %} bg-[#1A2420] text-[#8A9EA8] {% endif %}">
+                                {{ appt.get_status_display }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column: Visual Calm Progress & Private Journal (5 Cols) -->
+            <div class="lg:col-span-5 space-y-8">
+                
+                <!-- Visual Calm Progress Widget (Nature Metaphors) -->
+                <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-[#344A40]">
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-[#E8EEF0]">My Gentle Learning Growth</h2>
+                            <p class="text-[11px] text-[#8A9EA8] font-medium">No deadlines. No pressure.</p>
+                        </div>
+                        <a href="{% url 'course_list' %}" class="text-xs font-semibold text-[#6BAF8A] hover:underline">All Courses</a>
+                    </div>
+
+                    <div class="space-y-4">
+                        {% for item in course_data %}
+                        <div class="p-4 rounded-2xl bg-[#1A2420] border border-[#344A40] space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-serif font-bold text-sm text-[#E8EEF0]">{{ item.course.title }}</h4>
+                                    <p class="text-xs text-[#8A9EA8]">
+                                        {% if item.completed_count == 0 %}
+                                            🌱 Seed planted • Whenever you're ready
+                                        {% elif item.progress_percent == 100 %}
+                                            🌸 Soft bloom achieved! All modules completed
+                                        {% else %}
+                                            🌿 Sprout growing • {{ item.completed_count }} of {{ item.total_modules }} completed
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <span class="text-xl">
+                                    {% if item.progress_percent == 0 %}🌱
+                                    {% elif item.progress_percent < 50 %}🌱
+                                    {% elif item.progress_percent < 100 %}🌿
+                                    {% else %}🌸{% endif %}
+                                </span>
+                            </div>
+
+                            <!-- Soft Nature Progress Meter -->
+                            <div class="w-full bg-[#222F2A] h-2.5 rounded-full overflow-hidden border border-[#344A40]">
+                                <div class="bg-[#2D6B52] h-2.5 rounded-full transition-all duration-500" style="width: {{ item.progress_percent }}%"></div>
+                            </div>
+
+                            <div class="pt-1 flex justify-between items-center text-xs">
+                                <span class="text-[#8A9EA8] italic">No rush—learn at your own pace.</span>
+                                <a href="{% url 'course_detail' item.course.slug %}" class="font-semibold text-[#6BAF8A] hover:underline">
+                                    Continue →
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-xs text-[#8A9EA8]">No courses available yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Private Reflection Journal Access -->
+                <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-[#344A40]">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-[#6BAF8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            <h2 class="font-serif font-bold text-xl text-[#E8EEF0]">Private Reflection Journal</h2>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-[#8A9EA8]">
+                        "Your reflection entries are completely private to you."
+                    </p>
+
+                    {% if journal_entries %}
+                        <div class="space-y-4 max-h-80 overflow-y-auto pr-1">
+                            {% for journal in journal_entries %}
+                            {% if journal.entry_text %}
+                            <div class="p-4 rounded-2xl bg-[#1A2420] border border-[#344A40] space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="font-bold text-[#6BAF8A]">{{ journal.module.title }}</span>
+                                    <span class="text-[#8A9EA8]">{{ journal.updated_at|date:"M j, g:i a" }}</span>
+                                </div>
+                                <p class="text-xs text-[#D5DED8] leading-relaxed italic bg-[#222F2A] p-3 rounded-xl border border-[#344A40]">
+                                    "{{ journal.entry_text|truncatewords:30 }}"
+                                </p>
+                                <div class="text-right">
+                                    <a href="{% url 'module_detail' journal.module.course.slug journal.module.id %}" class="text-xs font-semibold text-[#6BAF8A] hover:underline">
+                                        View/Edit in Module →
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-6 text-xs text-[#8A9EA8]">
+                            You haven't saved any journal reflections yet. Explore our modules to start journaling!
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function somaticEnergyTracker(initialChart, currentTodayLevel) {
+        return {
+            chart: initialChart,
+            activeLevel: currentTodayLevel || '',
+            statusMsg: currentTodayLevel ? 'Logged for today' : 'Not logged yet today',
+
+            logEnergy(level) {
+                this.activeLevel = level;
+                this.statusMsg = 'Logging energy...';
+
+                fetch('/api/log-energy/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        energy_level: level
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        this.statusMsg = '✓ Logged gently for today';
+                        this.chart = data.chart_data;
+                    } else {
+                        this.statusMsg = 'Error recording log';
+                    }
+                })
+                .catch(err => {
+                    console.error('Energy log error:', err);
+                    this.statusMsg = 'Submission error';
+                });
+            }
+        }
+    }
+
+    function clientDashboard() {
+        return {
+            greetingText: 'Good day',
+            greetingSubtext: 'Wishing you a calm start to your day.',
+            selectedMood: null,
+            moods: [
+                {
+                    id: 'calm',
+                    label: 'Calm',
+                    emoji: '🌿',
+                    reassurance: 'It is wonderful that you are feeling centered today. Take this peace with you.'
+                },
+                {
+                    id: 'overwhelmed',
+                    label: 'Overwhelmed',
+                    emoji: '🌧️',
+                    reassurance: 'It is completely okay to feel that way. Take things one gentle step at a time today.'
+                },
+                {
+                    id: 'hopeful',
+                    label: 'Hopeful',
+                    emoji: '☀️',
+                    reassurance: 'Hope is a powerful anchor. Welcome this bright energy with open arms.'
+                },
+                {
+                    id: 'exhausted',
+                    label: 'Exhausted',
+                    emoji: '😴',
+                    reassurance: 'Your body and mind are asking for rest. Give yourself full permission to slow down.'
+                }
+            ],
+
+            init() {
+                const hour = new Date().getHours();
+                if (hour < 12) {
+                    this.greetingText = 'Good morning';
+                    this.greetingSubtext = 'Wishing you a calm, grounded start to your day.';
+                } else if (hour < 17) {
+                    this.greetingText = 'Good afternoon';
+                    this.greetingSubtext = 'Pause and take a quiet moment for yourself.';
+                } else {
+                    this.greetingText = 'Good evening';
+                    this.greetingSubtext = 'Take a deep breath—you’ve made it through the day.';
+                }
+            },
+
+            selectMood(mood) {
+                this.selectedMood = mood;
+            }
+        }
+    }
+</script>
+{% endblock %}

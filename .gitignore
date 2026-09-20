@@ -1,0 +1,28 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Database (optional - ignored to keep clean production state)
+*.sqlite3
+*.sqlite3-journal
+
+# Logs & Temp files
+*.log
+scratch/
+.tmp/
+*.tmp
+
+# Operating System & IDEs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

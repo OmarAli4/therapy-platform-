@@ -1,0 +1,130 @@
+<nav class="bg-[#1A2420]/92 backdrop-blur-md sticky top-0 z-50 border-b border-[#2A3832] transition-all shadow-2xs" x-data="{ mobileMenuOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'landing' %}" class="flex items-center space-x-3 group">
+                    <!-- Forest Logo Icon: Heart of Care + Sprouting Leaf of Growth -->
+                    <div class="w-11 h-11 rounded-2xl bg-[#2D6B52] text-emerald-50 flex items-center justify-center group-hover:bg-[#3D8A6B] transition-all duration-300 shadow-sm border border-[#3D8A6B]/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Safe Heart Contour -->
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            <!-- Inner Sprout of Hope -->
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12c1.2-1.5 2.8-1.8 3.5-0.8m-3.5 0.8c-1.2-1.5-2.8-1.8-3.5-0.8m3.5 0.8v3.2" class="text-emerald-200"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-xl text-[#E8EEF0] tracking-tight block">Sanctuary</span>
+                        <span class="text-[11px] text-[#6BAF8A] font-semibold tracking-wide block -mt-0.5">Therapy & Mindful Growth</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="{% url 'landing' %}" class="text-[#A8BFB2] hover:text-[#E8EEF0] font-medium text-sm transition-colors">Home</a>
+                <button type="button" 
+                        @click="$dispatch('open-grounding')"
+                        class="px-3.5 py-1.5 rounded-full bg-[#2D6B52]/30 text-[#6BAF8A] font-semibold text-xs border border-[#2D6B52]/40 hover:bg-[#2D6B52]/50 transition-colors flex items-center space-x-1">
+                    <span>🫁 4-7-8 Breathing Timer</span>
+                </button>
+                <a href="{% url 'calm_space' %}" class="px-3.5 py-1.5 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] font-semibold text-xs border border-[#2D6B52]/40 hover:bg-[#2D6B52]/30 transition-colors flex items-center space-x-1">
+                    <span>🕊️ Calming Room</span>
+                </a>
+                <a href="{% url 'book_session' %}" class="text-[#A8BFB2] hover:text-[#E8EEF0] font-medium text-sm transition-colors">Book Session</a>
+                <a href="{% url 'course_list' %}" class="text-[#A8BFB2] hover:text-[#E8EEF0] font-medium text-sm transition-colors">Self-Paced Courses</a>
+
+                {% if user.is_authenticated %}
+                    {% if user.is_therapist %}
+                        <a href="{% url 'therapist_dashboard' %}" class="px-4 py-2 text-sm font-semibold text-[#E8EEF0] bg-[#2D6B52]/20 rounded-xl hover:bg-[#2D6B52]/30 border border-[#2D6B52]/40">
+                            Therapist Portal
+                        </a>
+                    {% else %}
+                        <a href="{% url 'dashboard' %}" class="px-4 py-2 text-sm font-semibold text-[#E8EEF0] bg-[#2D6B52]/20 rounded-xl hover:bg-[#2D6B52]/30 border border-[#2D6B52]/40">
+                            My Sanctuary Dashboard
+                        </a>
+                    {% endif %}
+
+                    <!-- User Menu Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-2 text-[#E8EEF0] hover:text-white font-medium text-sm focus:outline-none">
+                            <div class="w-9 h-9 rounded-full bg-[#2D6B52] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                {{ user.first_name|default:user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="font-medium text-[#D5DED8]">{{ user.first_name|default:user.username }}</span>
+                            <svg class="w-4 h-4 text-[#6BAF8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-56 bg-[#222F2A] rounded-2xl shadow-xl py-2 z-50 border border-[#344A40]">
+                            <div class="px-4 py-3 border-b border-[#344A40]">
+                                <p class="text-xs text-[#6BAF8A] font-medium uppercase tracking-wider">Signed in as</p>
+                                <p class="text-sm font-semibold text-[#E8EEF0] truncate">{{ user.email }}</p>
+                                <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-md bg-[#2D6B52]/20 text-[#6BAF8A]">
+                                    {{ user.get_role_display }}
+                                </span>
+                            </div>
+                            
+                            {% if user.is_therapist %}
+                                <a href="{% url 'therapist_dashboard' %}" class="block px-4 py-2 text-sm text-[#D5DED8] hover:bg-[#2A3832]">Therapist Dashboard</a>
+                            {% else %}
+                                <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-[#D5DED8] hover:bg-[#2A3832]">My Dashboard</a>
+                            {% endif %}
+                            
+                            <form method="post" action="{% url 'logout' %}" class="block">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-rose-400 hover:bg-rose-950/40 transition-colors">
+                                    Sign Out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex items-center space-x-3">
+                        <a href="{% url 'login' %}" class="text-[#A8BFB2] hover:text-[#E8EEF0] font-medium text-sm px-4 py-2 transition-colors">Log In</a>
+                        <a href="{% url 'register' %}" class="bg-[#2D6B52] hover:bg-[#3D8A6B] text-white font-medium text-sm px-5 py-2.5 rounded-2xl shadow-sm hover:shadow transition-all duration-200">
+                            Get Started
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="flex items-center md:hidden space-x-2">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-[#D5DED8] p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-[#1A2420] border-b border-[#2A3832] px-4 pt-2 pb-6 space-y-3">
+        <a href="{% url 'landing' %}" class="block py-2 text-[#E8EEF0] font-medium">Home</a>
+        <a href="{% url 'calm_space' %}" class="block py-2 text-[#6BAF8A] font-semibold">🕊️ Calming Room</a>
+        <a href="{% url 'book_session' %}" class="block py-2 text-[#D5DED8] font-medium">Book Session</a>
+        <a href="{% url 'course_list' %}" class="block py-2 text-[#D5DED8] font-medium">Self-Paced Courses</a>
+        
+        {% if user.is_authenticated %}
+            <div class="pt-3 border-t border-[#2A3832]">
+                <p class="text-xs text-[#6BAF8A]">Signed in as {{ user.email }}</p>
+                {% if user.is_therapist %}
+                    <a href="{% url 'therapist_dashboard' %}" class="block py-2 text-[#6BAF8A] font-semibold">Therapist Portal</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}" class="block py-2 text-[#6BAF8A] font-semibold">My Dashboard</a>
+                {% endif %}
+                <form method="post" action="{% url 'logout' %}" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left py-2 text-rose-400 font-medium">Sign Out</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="pt-3 border-t border-[#2A3832] flex flex-col space-y-2">
+                <a href="{% url 'login' %}" class="w-full text-center py-2 text-[#D5DED8] border border-[#344A40] rounded-xl font-medium">Log In</a>
+                <a href="{% url 'register' %}" class="w-full text-center py-2.5 bg-[#2D6B52] text-white rounded-xl font-medium shadow-sm">Get Started</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>

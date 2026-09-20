@@ -1,0 +1,153 @@
+<!-- Feature 2: Somatic Tension Map & Interactive Body Relief Guide -->
+<div x-data="somaticBodyMap()" 
+     class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-stone-200/80 dark:border-slate-700 shadow-xs space-y-6">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-stone-100 dark:border-slate-700">
+        <div>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] font-semibold uppercase tracking-wider">
+                    🌸 Somatic Body Scan
+                </span>
+            </div>
+            <h3 class="font-serif font-bold text-2xl text-stone-900 dark:text-white mt-1">Interactive Somatic Tension Map</h3>
+            <p class="text-xs text-stone-500 dark:text-slate-400 mt-0.5">Where is your body holding tension right now? Tap a region to release it.</p>
+        </div>
+    </div>
+
+    <!-- Body Map Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: Interactive Body Region Selector Buttons (6 Cols) -->
+        <div class="md:col-span-6 space-y-2.5">
+            <template x-for="zone in bodyZones" :key="zone.id">
+                <button type="button" 
+                        @click="selectZone(zone)"
+                        class="w-full p-4 rounded-2xl border text-left flex items-center justify-between transition-all duration-300 transform hover:-translate-y-0.5"
+                        :class="selectedZone && selectedZone.id === zone.id ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 ring-2 ring-emerald-300 text-emerald-950 dark:text-emerald-200' : 'border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-300'">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xl" x-text="zone.icon"></span>
+                        <div>
+                            <span class="font-serif font-bold text-sm block" x-text="zone.name"></span>
+                            <span class="text-[11px] text-stone-500 dark:text-slate-400 block" x-text="zone.sensation"></span>
+                        </div>
+                    </div>
+                    <span class="text-xs text-emerald-800 dark:text-emerald-400 font-bold" x-text="selectedZone && selectedZone.id === zone.id ? 'Selected ✓' : 'Tap to scan'"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Right: Unfolded Micro-Relief Exercise Card (6 Cols) -->
+        <div class="md:col-span-6">
+            <div class="bg-gradient-to-br from-emerald-900 to-stone-900 text-white rounded-3xl p-6 sm:p-8 border border-emerald-700/50 shadow-xl space-y-5 relative overflow-hidden min-h-[340px] flex flex-col justify-between">
+                
+                <!-- Background Ambient Glow -->
+                <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-500/20 rounded-full blur-2xl"></div>
+
+                <div class="space-y-4 relative z-10">
+                    <div class="flex justify-between items-center border-b border-emerald-800/80 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl" x-text="selectedZone ? selectedZone.icon : '🌸'"></span>
+                            <h4 class="font-serif font-bold text-lg text-stone-100" x-text="selectedZone ? selectedZone.name + ' Relief' : 'Select a Body Zone'"></h4>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-bold uppercase tracking-wider border border-emerald-800">
+                            30-Second Somatic Reset
+                        </span>
+                    </div>
+
+                    <template x-if="selectedZone">
+                        <div class="space-y-4">
+                            <p class="text-xs text-emerald-200 font-medium leading-relaxed" x-text="selectedZone.exerciseTitle"></p>
+                            
+                            <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs text-stone-100 leading-relaxed italic font-serif">
+                                "<span x-text="selectedZone.exerciseSteps"></span>"
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="!selectedZone">
+                        <div class="text-center py-10 text-xs text-emerald-200/80 space-y-2">
+                            <p class="text-base">👈 Tap any body zone on the left</p>
+                            <p>Discover a gentle 30-second physical relief exercise targeted for where you carry tension.</p>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="relative z-10 pt-2 border-t border-emerald-800/60 flex justify-between items-center text-[11px] text-emerald-300/80">
+                    <span>Somatic mind-body alignment</span>
+                    <span class="font-bold">Sanctuary Self-Care 🌿</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function somaticBodyMap() {
+        return {
+            selectedZone: null,
+
+            bodyZones: [
+                {
+                    id: 'head',
+                    icon: '🧠',
+                    name: 'Head & Mind',
+                    sensation: 'Racing thoughts, forehead tightness',
+                    exerciseTitle: 'Forehead Smoothing & Mental Pause',
+                    exerciseSteps: 'Close your eyes for 10 seconds. Softly unclench your eyebrows and imagine cool, soothing water smoothing across your forehead. Take one long exhale through your mouth.'
+                },
+                {
+                    id: 'jaw',
+                    icon: '🗣️',
+                    name: 'Jaw & Neck',
+                    sensation: 'Unconscious teeth clenching, neck stiffness',
+                    exerciseTitle: 'The Jaw Release Micro-Pause',
+                    exerciseSteps: 'Part your lips slightly. Let your tongue rest softly on the floor of your mouth away from your teeth. Gently roll your neck in a slow circle twice.'
+                },
+                {
+                    id: 'shoulders',
+                    icon: '🛋️',
+                    name: 'Shoulders',
+                    sensation: 'Carrying heavy emotional weight & tension',
+                    exerciseTitle: 'The 10-Second Shoulder Drop',
+                    exerciseSteps: 'Inhale deeply and shrug your shoulders up to your ears. Hold for 3 seconds... Now drop them completely! Feel the 2-inch relief as tension falls away.'
+                },
+                {
+                    id: 'chest',
+                    icon: '🫁',
+                    name: 'Chest & Heart',
+                    sensation: 'Shallow breathing, chest tightness',
+                    exerciseTitle: 'Chest Expansion & Heart Opening Breath',
+                    exerciseSteps: 'Place your right hand gently over your heart. Breathe into your hand for 4 seconds, holding unconditional warmth there, then release slowly.'
+                },
+                {
+                    id: 'hands',
+                    icon: '👐',
+                    name: 'Hands & Stomach',
+                    sensation: 'Gripping fists, stomach knotting',
+                    exerciseTitle: 'Unclenching Fists & Belly Softening',
+                    exerciseSteps: 'Open both hands wide and stretch your fingers out. Soften your stomach completely—let it expand without holding it in. Breathe deep down into your belly.'
+                },
+                {
+                    id: 'feet',
+                    icon: '🦵',
+                    name: 'Feet & Grounding',
+                    sensation: 'Restless, un-grounded energy',
+                    exerciseTitle: 'Earth Grounding Sole Press',
+                    exerciseSteps: 'Press both soles of your feet firmly into the floor. Feel the solid earth supporting your weight beneath you. You are held and grounded in this moment.'
+                }
+            ],
+
+            init() {
+                // Default select shoulders zone
+                this.selectedZone = this.bodyZones[2];
+            },
+
+            selectZone(zone) {
+                this.selectedZone = zone;
+            }
+        }
+    }
+</script>
