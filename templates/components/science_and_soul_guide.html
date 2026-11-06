@@ -1,0 +1,148 @@
+<!-- KindSoul Science & Soul Evidence Guide + Trusted Global Research Library -->
+<!-- EASY EDIT GUIDE: Edit `pillars` or `trustedSources` inside scienceAndSoulGuide() below to update content anytime! -->
+<section x-data="scienceAndSoulGuide()" class="py-20 lg:py-28 bg-[#1D2B26] border-b border-[#2A3832]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#2D6B52]/20 border border-[#2D6B52]/40 text-[#6BAF8A] text-xs font-bold tracking-[0.2em] uppercase">
+                <span>🔬</span>
+                <span>Evidence-Based Neuroscience × Humanistic Care</span>
+            </div>
+            <h2 class="font-heading text-3xl sm:text-5xl font-bold text-[#E8EEF0]">Why KindSoul Works: The Science & The Soul</h2>
+            <p class="text-[#8A9EA8] font-light text-base sm:text-lg leading-relaxed">
+                Every gentle detail on KindSoul is intentionally designed at the intersection of modern affective neuroscience, Emotional Intelligence (EQ), and existential human warmth.
+            </p>
+        </div>
+
+        <!-- Interactive Science × Soul Pillars -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <template x-for="pillar in pillars" :key="pillar.title">
+                <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-8 border border-[#344A40] shadow-md hover:border-[#6BAF8A]/60 transition-all duration-300 flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 gap-2">
+                            <span class="text-3xl w-12 h-12 rounded-2xl bg-[#1A2420] border border-[#344A40] flex items-center justify-center" x-text="pillar.icon"></span>
+                            <span class="text-xs font-semibold px-3.5 py-1 rounded-full bg-[#2D6B52]/25 text-[#6BAF8A] border border-[#2D6B52]/40" x-text="pillar.framework"></span>
+                        </div>
+                        <h3 class="font-heading text-xl sm:text-2xl font-bold text-[#E8EEF0] mb-5" x-text="pillar.title"></h3>
+
+                        <!-- Scientific Mechanism -->
+                        <div class="mb-4 bg-[#1A2420] p-5 rounded-2xl border border-[#344A40]">
+                            <div class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-1.5">🧠 The Neuroscience & Psychology</div>
+                            <p class="text-xs sm:text-sm text-[#D5DED8] leading-relaxed" x-text="pillar.science"></p>
+                        </div>
+
+                        <!-- Spiritual / Humanistic Meaning -->
+                        <div class="bg-[#2D6B52]/15 p-5 rounded-2xl border border-[#2D6B52]/35">
+                            <div class="text-xs font-bold uppercase tracking-wider text-[#D4A55A] mb-1.5">🕊️ The Soul & Inner Meaning</div>
+                            <p class="text-xs sm:text-sm text-[#E8EEF0] leading-relaxed" x-text="pillar.soul"></p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Trusted Global EQ & Psychology Research Library -->
+        <div class="bg-[#222F2A]/95 rounded-3xl p-8 md:p-12 border border-[#344A40] shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-6 border-b border-[#344A40]">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-[#6BAF8A] block mb-2">Curated Psychoeducation Library</span>
+                    <h3 class="font-heading text-2xl sm:text-3xl font-bold text-[#E8EEF0]">World-Renowned Sources on EQ, Empathy & Healing</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-[#8A9EA8] max-w-md">
+                    Our tools are inspired by peer-reviewed research from leading universities and affective neuroscience labs. Tap any card to explore their public resources:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <template x-for="source in trustedSources" :key="source.name">
+                    <a :href="source.url" target="_blank" rel="noopener noreferrer"
+                       class="group bg-[#1A2420] hover:bg-[#2A3832] p-6 rounded-2xl border border-[#344A40] hover:border-[#D4A55A]/60 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-[#D4A55A] font-bold mb-2">
+                                <span x-text="source.institution"></span>
+                                <span class="text-[#6BAF8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">Open Resource ↗</span>
+                            </div>
+                            <h4 class="font-heading text-base font-bold text-[#E8EEF0] mb-2 group-hover:text-[#6BAF8A] transition-colors" x-text="source.name"></h4>
+                            <p class="text-xs text-[#A8BFB2] leading-relaxed" x-text="source.focus"></p>
+                        </div>
+                    </a>
+                </template>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function scienceAndSoulGuide() {
+    return {
+        pillars: [
+            {
+                icon: '🧭',
+                framework: 'Yale RULER & UCLA Affect Labeling',
+                title: 'Emotional Granularity ("Name It to Tame It")',
+                science: 'fMRI studies by Dr. Matthew Lieberman (UCLA) and Dr. Marc Brackett (Yale) show that putting precise words to emotions activates the right ventrolateral prefrontal cortex and dampens amygdala alarm signals.',
+                soul: 'Moving from a vague "I feel bad" to "I feel quietly overwhelmed and unseen" honors your inner experience without letting the storm define who you are.'
+            },
+            {
+                icon: '💛',
+                framework: 'Dr. Kristin Neff & Stanford CCARE',
+                title: 'Self-Compassion Over Harsh Self-Criticism',
+                science: 'Self-criticism triggers the brain’s threat-defense system (cortisol & adrenaline). Self-compassion activates the mammalian caregiving system, releasing oxytocin and endorphins that restore emotional resilience.',
+                soul: 'Returning home to yourself as a gentle friend rather than a harsh judge—recognizing that imperfection is part of our shared humanity.'
+            },
+            {
+                icon: '🫁',
+                framework: 'Polyvagal Theory (Dr. Stephen Porges)',
+                title: 'Somatic Co-Regulation & Vagal Safety',
+                science: '80% of vagus nerve fibers are afferent (sending signals from the body up to the brain). Slow exhalations, acoustic warmth, and somatic check-ins signal safety directly to your brainstem.',
+                soul: 'Before the mind can untangle complex thoughts, the body must first feel held in a tranquil, unhurried sanctuary.'
+            },
+            {
+                icon: '🍃',
+                framework: 'ACT Therapy (Dr. Steven Hayes)',
+                title: 'Cognitive Defusion & Mindful Release',
+                science: 'Acceptance and Commitment Therapy (ACT) proves that externalizing heavy thoughts ("I am noticing a thought" rather than fusing with it) breaks rumination loops in the Default Mode Network.',
+                soul: 'Remembering that you are the vast, quiet sky—and your anxious thoughts are merely passing weather.'
+            }
+        ],
+
+        trustedSources: [
+            {
+                institution: 'Yale University',
+                name: 'Yale Center for Emotional Intelligence (RULER)',
+                focus: 'Pioneering research by Dr. Marc Brackett on recognizing, understanding, labeling, expressing, and regulating emotions.',
+                url: 'https://www.rulerapproach.org/'
+            },
+            {
+                institution: 'UC Berkeley',
+                name: 'Greater Good Science Center (GGSC)',
+                focus: 'Science-based insights and actionable practices for empathy, gratitude, compassion, and human connection.',
+                url: 'https://greatergood.berkeley.edu/'
+            },
+            {
+                institution: 'Dr. Kristin Neff',
+                name: 'Center for Mindful Self-Compassion',
+                focus: 'Empirical research and guided practices on the three pillars: Self-Kindness, Common Humanity, and Mindfulness.',
+                url: 'https://self-compassion.org/'
+            },
+            {
+                institution: 'Stanford Medicine',
+                name: 'CCARE (Compassion & Altruism Research)',
+                focus: 'Neuroscience research examining how compassion training transforms brain circuitry and autonomic health.',
+                url: 'https://ccare.stanford.edu/'
+            },
+            {
+                institution: 'Polyvagal Institute',
+                name: 'Dr. Stephen Porges — Polyvagal Theory',
+                focus: 'Understanding how the autonomic nervous system and vagus nerve regulate emotional safety and social connection.',
+                url: 'https://www.polyvagalinstitute.org/'
+            },
+            {
+                institution: 'Dr. Daniel Goleman',
+                name: 'Emotional Intelligence Consortium',
+                focus: 'Research on the 5 core competencies of EQ: Self-Awareness, Self-Regulation, Motivation, Empathy, and Social Skills.',
+                url: 'https://www.eiconsortium.org/'
+            }
+        ]
+    };
+}
+</script>

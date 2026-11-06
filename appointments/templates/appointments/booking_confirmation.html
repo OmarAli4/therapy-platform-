@@ -1,64 +1,66 @@
 {% extends 'base.html' %}
 
-{% block title %}Booking Confirmed | Sanctuary Therapy{% endblock %}
+{% block title %}Booking Confirmed | KindSoul Therapy{% endblock %}
 
 {% block content %}
-<div class="py-16 bg-stone-50 dark:bg-slate-900 min-h-[80vh] flex flex-col justify-center">
+<div class="py-16 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-[80vh] flex flex-col justify-center">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
         
-        <div class="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 flex items-center justify-center mx-auto shadow-md border border-emerald-200 dark:border-emerald-800 animate-bounce">
+        <div class="w-20 h-20 rounded-full bg-[#2D6B52]/30 text-[#6BAF8A] flex items-center justify-center mx-auto shadow-md border border-[#6BAF8A]/40 animate-bounce">
             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
         </div>
 
         <div class="space-y-3">
-            <span class="px-4 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider">
+            <span class="px-4 py-1.5 rounded-full bg-[#2D6B52]/25 text-[#6BAF8A] border border-[#2D6B52]/40 text-xs font-semibold uppercase tracking-wider">
                 Session Confirmed
             </span>
-            <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white">
+            <h1 class="font-heading text-3xl sm:text-4xl font-bold text-[#E8EEF0]">
                 You're all set! We’ve reserved your spot.
             </h1>
-            <p class="text-stone-600 dark:text-slate-300 text-base max-w-lg mx-auto leading-relaxed">
+            <p class="text-[#8A9EA8] text-base max-w-lg mx-auto leading-relaxed">
                 Take a deep breath—we look forward to meeting you. A private telehealth link has been attached to your session.
             </p>
         </div>
 
         <!-- Appointment Card Summary -->
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-stone-200/80 dark:border-slate-700 shadow-sm text-left space-y-4">
-            <div class="flex justify-between items-center border-b border-stone-100 dark:border-slate-700 pb-4">
+        <div class="bg-[#222F2A]/95 p-8 rounded-3xl border border-[#344A40] shadow-md text-left space-y-4">
+            <div class="flex justify-between items-center border-b border-[#344A40] pb-4">
                 <div>
-                    <p class="text-xs text-stone-400 uppercase font-semibold">Client</p>
-                    <p class="font-serif font-bold text-lg text-slate-800 dark:text-white">{{ appointment.client.get_full_name|default:appointment.client.username }}</p>
+                    <p class="text-xs text-[#8A9EA8] uppercase font-semibold">Client</p>
+                    <p class="font-heading font-bold text-lg text-[#E8EEF0]">{{ appointment.client.get_full_name|default:appointment.client.username }}</p>
                 </div>
-                <span class="px-3 py-1 bg-emerald-800 text-white text-xs font-bold rounded-lg">
+                <span class="px-3 py-1 bg-[#2D6B52] text-white text-xs font-bold rounded-lg">
                     Confirmed
                 </span>
             </div>
 
             <div class="grid grid-cols-2 gap-4 text-sm pt-2">
                 <div>
-                    <p class="text-xs text-stone-400 font-medium">Date</p>
-                    <p class="font-semibold text-slate-800 dark:text-slate-100">{{ appointment.date|date:"F j, Y (l)" }}</p>
+                    <p class="text-xs text-[#8A9EA8] font-medium">Therapist</p>
+                    <p class="font-semibold text-[#D4A55A]">
+                        {% if appointment.therapist %}{{ appointment.therapist.get_full_name|default:appointment.therapist.username }}{% else %}KindSoul Specialist{% endif %}
+                    </p>
                 </div>
                 <div>
-                    <p class="text-xs text-stone-400 font-medium">Time Window</p>
-                    <p class="font-semibold text-emerald-800 dark:text-emerald-400">{{ appointment.start_time|time:"g:i A" }} – {{ appointment.end_time|time:"g:i A" }}</p>
+                    <p class="text-xs text-[#8A9EA8] font-medium">Date</p>
+                    <p class="font-semibold text-[#E8EEF0]">{{ appointment.date|date:"F j, Y (l)" }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-stone-400 font-medium">Focus Area</p>
-                    <p class="font-semibold text-slate-800 dark:text-slate-100">{{ appointment.get_focus_area_display }}</p>
+                    <p class="text-xs text-[#8A9EA8] font-medium">Time Window</p>
+                    <p class="font-semibold text-[#6BAF8A]">{{ appointment.start_time|time:"g:i A" }} – {{ appointment.end_time|time:"g:i A" }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-stone-400 font-medium">Session Type</p>
-                    <p class="font-semibold text-slate-800 dark:text-slate-100">45-min Telehealth (+15m buffer)</p>
+                    <p class="text-xs text-[#8A9EA8] font-medium">Focus Area</p>
+                    <p class="font-semibold text-[#E8EEF0]">{{ appointment.get_focus_area_display }}</p>
                 </div>
             </div>
 
             {% if appointment.notes_by_client %}
-            <div class="pt-4 border-t border-stone-100 dark:border-slate-700 text-xs">
-                <p class="text-stone-400 font-medium">Your Pre-session Focus Notes:</p>
-                <p class="text-slate-700 dark:text-slate-300 italic bg-stone-50 dark:bg-slate-900 p-3 rounded-xl border border-stone-200/60 dark:border-slate-800 mt-1">
+            <div class="pt-4 border-t border-[#344A40] text-xs">
+                <p class="text-[#8A9EA8] font-medium">Your Pre-session Focus Notes:</p>
+                <p class="text-[#D5DED8] italic bg-[#1A2420] p-3 rounded-xl border border-[#344A40] mt-1">
                     "{{ appointment.notes_by_client }}"
                 </p>
             </div>
@@ -66,22 +68,22 @@
         </div>
 
         <!-- Feature 3: Pre-Session "Heart & Mind" Preparation Guide Component -->
-        <div class="bg-gradient-to-br from-emerald-50 to-stone-50 dark:from-slate-800 dark:to-slate-900 p-8 rounded-3xl border border-emerald-200/80 dark:border-slate-700 text-left space-y-6 shadow-xs"
+        <div class="bg-[#222F2A]/95 p-8 rounded-3xl border border-[#344A40] text-left space-y-6 shadow-md"
              x-data="preSessionPrep({{ appointment.id }})">
             
-            <div class="flex justify-between items-start border-b border-emerald-200/60 dark:border-slate-700 pb-4">
+            <div class="flex justify-between items-start border-b border-[#344A40] pb-4">
                 <div class="space-y-1">
-                    <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] font-semibold uppercase tracking-wider">
-                        Feature 3 • Pre-Session Reflection
+                    <span class="px-3 py-1 rounded-full bg-[#2D6B52]/25 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider">
+                        Pre-Session Reflection
                     </span>
-                    <h3 class="font-serif font-bold text-xl text-stone-900 dark:text-white">Pre-Session "Heart & Mind" Guide</h3>
-                    <p class="text-xs text-stone-600 dark:text-slate-400">Optional 2-minute reflection to help Dr. Wessam hold safe space for you.</p>
+                    <h3 class="font-heading font-bold text-xl text-[#E8EEF0]">Pre-Session "Heart & Mind" Guide</h3>
+                    <p class="text-xs text-[#8A9EA8]">Optional 2-minute reflection to help {% if appointment.therapist %}{{ appointment.therapist.get_full_name }}{% else %}your therapist{% endif %} hold safe space for you.</p>
                 </div>
             </div>
 
             <!-- Question 1: Heaviest Emotion -->
             <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider">
                     1. What emotion feels heaviest or most present today?
                 </label>
                 <div class="flex flex-wrap gap-2">
@@ -89,7 +91,7 @@
                         <button type="button" 
                                 @click="selectedEmotion = emo"
                                 class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all"
-                                :class="selectedEmotion === emo ? 'border-emerald-700 bg-emerald-800 text-white' : 'border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-400'">
+                                :class="selectedEmotion === emo ? 'border-[#D4A55A] bg-[#D4A55A] text-[#1A2420] font-bold' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#6BAF8A]'">
                             <span x-text="emo"></span>
                         </button>
                     </template>
@@ -98,12 +100,12 @@
 
             <!-- Question 2: Safety Preference -->
             <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider">
                     2. What would make this session feel safe for you?
                 </label>
                 <textarea x-model="safetyNote" 
                           rows="3" 
-                          class="w-full p-3.5 rounded-xl border border-stone-300 dark:border-slate-700 focus:border-emerald-600 text-xs text-slate-800 dark:text-white bg-white dark:bg-slate-900 outline-none" 
+                          class="w-full p-3.5 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-xs text-[#E8EEF0] bg-[#1A2420] outline-none" 
                           placeholder="e.g. Starting with a 1-minute breathing pause, gentle pacing, or focusing on grounding..."></textarea>
             </div>
 
@@ -111,17 +113,17 @@
                 <span class="text-xs font-medium" :class="statusColor" x-text="statusMsg"></span>
                 <button type="button" 
                         @click="submitPrep()" 
-                        class="px-6 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors">
+                        class="px-6 py-2.5 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors">
                     Attach Reflection to Booking 📩
                 </button>
             </div>
         </div>
 
         <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{% url 'dashboard' %}" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-sm rounded-xl shadow-xs transition-all">
-                Go to My Dashboard
+            <a href="{% url 'dashboard' %}" class="w-full sm:w-auto px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-sm rounded-xl shadow-md transition-all">
+                Go to My Dashboard →
             </a>
-            <a href="{% url 'course_list' %}" class="w-full sm:w-auto px-8 py-3.5 bg-white dark:bg-slate-800 border border-stone-300 dark:border-slate-700 hover:bg-stone-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-sm rounded-xl transition-all">
+            <a href="{% url 'course_list' %}" class="w-full sm:w-auto px-8 py-3.5 bg-[#222F2A] border border-[#344A40] hover:bg-[#2A3832] text-[#E8EEF0] font-semibold text-sm rounded-xl transition-all">
                 Explore Self-Paced Courses
             </a>
         </div>
@@ -137,13 +139,13 @@
             appointmentId: appointmentId,
             selectedEmotion: '🌧️ Overwhelm',
             safetyNote: '',
-            statusMsg: 'Private to therapist',
-            statusColor: 'text-stone-400',
+            statusMsg: 'Private to your therapist',
+            statusColor: 'text-[#8A9EA8]',
             emotions: ['🌧️ Overwhelm', '😔 Grief', '🌪️ Anxiety', '🌫️ Numbness', '☀️ Hopeful', '🥱 Exhaustion'],
 
             submitPrep() {
                 this.statusMsg = 'Attaching reflection...';
-                this.statusColor = 'text-amber-600 animate-pulse';
+                this.statusColor = 'text-[#D4A55A] animate-pulse';
 
                 fetch(`/book/${this.appointmentId}/pre-session-prep/`, {
                     method: 'POST',
@@ -159,17 +161,17 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        this.statusMsg = '✓ Attached to your booking! Dr. Wessam will review this prior to your meeting.';
-                        this.statusColor = 'text-emerald-700 dark:text-emerald-400 font-bold';
+                        this.statusMsg = '✓ Attached to your booking! Your therapist will review this prior to your meeting.';
+                        this.statusColor = 'text-[#6BAF8A] font-bold';
                     } else {
                         this.statusMsg = 'Error saving reflection.';
-                        this.statusColor = 'text-rose-600';
+                        this.statusColor = 'text-rose-400';
                     }
                 })
                 .catch(err => {
                     console.error('Error submitting prep:', err);
                     this.statusMsg = 'Submission failed.';
-                    this.statusColor = 'text-rose-600';
+                    this.statusColor = 'text-rose-400';
                 });
             }
         }

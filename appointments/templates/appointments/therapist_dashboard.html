@@ -1,120 +1,128 @@
 {% extends 'base.html' %}
 
-{% block title %}Therapist Portal & Agenda | Sanctuary Practice{% endblock %}
+{% block title %}Therapist Portal & Agenda | KindSoul Practice{% endblock %}
 
 {% block content %}
-<div class="py-10 bg-stone-50 dark:bg-slate-900 min-h-screen" x-data="{ selectedTab: 'today' }">
+<div class="py-10 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-screen" x-data="{ selectedTab: 'today' }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <!-- Therapist Header -->
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-stone-200/70 dark:border-slate-700 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="bg-[#222F2A]/95 rounded-3xl p-8 border border-[#344A40] shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="flex items-center space-x-4">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-800 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-sm">
-                    {{ user.first_name|default:"T"|slice:":1" }}
+                <div class="w-14 h-14 rounded-2xl bg-[#2D6B52] text-white flex items-center justify-center font-heading font-bold text-2xl shadow-sm border border-[#6BAF8A]/40">
+                    {{ user.last_name|default:user.username|slice:":1"|upper }}
                 </div>
                 <div>
-                    <h1 class="font-serif text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white">
-                        Therapist Portal — {{ user.get_full_name|default:user.username }}
-                    </h1>
-                    <p class="text-xs text-stone-500 dark:text-slate-400 font-medium">Manage your calendar, client pre-session reflection notes, and de-stress buffer times.</p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="font-heading text-2xl sm:text-3xl font-bold text-[#E8EEF0]">
+                            {{ user.get_full_name|default:user.username }}
+                        </h1>
+                        <span class="px-3 py-0.5 rounded-full bg-[#1A2420] text-[#D4A55A] border border-[#344A40] text-xs font-semibold">
+                            {{ user.specialty|default:"Licensed Mindful Therapist" }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-[#8A9EA8] font-medium mt-1">Manage your personal bookings, client pre-session reflections, and weekly working hours.</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-950/60 px-4 py-2 rounded-2xl border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
-                <svg class="w-4 h-4 text-emerald-700 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span>15-Min Buffer Active Between Sessions</span>
+            <div class="flex items-center space-x-2 bg-[#1A2420] px-4 py-2.5 rounded-2xl border border-[#344A40] text-[#6BAF8A] text-xs font-semibold">
+                <svg class="w-4 h-4 text-[#6BAF8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>{{ availabilities.count }} Active Working Days</span>
             </div>
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="flex space-x-3 border-b border-stone-200/80 dark:border-slate-800 pb-3">
-            <button @click="selectedTab = 'today'" 
-                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-sm transition-all"
-                    :class="selectedTab === 'today' ? 'bg-emerald-800 text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-stone-100 border border-stone-200 dark:border-slate-700'">
+        <div class="flex flex-wrap gap-3 border-b border-[#344A40] pb-3">
+            <button type="button" @click="selectedTab = 'today'" 
+                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all"
+                    :class="selectedTab === 'today' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#222F2A] text-[#D5DED8] hover:bg-[#2A3832] border border-[#344A40]'">
                 Today's Agenda ({{ today_appointments.count }})
             </button>
-            <button @click="selectedTab = 'upcoming'" 
-                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-sm transition-all"
-                    :class="selectedTab === 'upcoming' ? 'bg-emerald-800 text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-stone-100 border border-stone-200 dark:border-slate-700'">
+            <button type="button" @click="selectedTab = 'upcoming'" 
+                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all"
+                    :class="selectedTab === 'upcoming' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#222F2A] text-[#D5DED8] hover:bg-[#2A3832] border border-[#344A40]'">
                 Upcoming Sessions ({{ upcoming_appointments.count }})
             </button>
-            <button @click="selectedTab = 'schedule'" 
-                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-sm transition-all"
-                    :class="selectedTab === 'schedule' ? 'bg-emerald-800 text-white shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-stone-100 border border-stone-200 dark:border-slate-700'">
-                Working Hours & Availability
+            <button type="button" @click="selectedTab = 'past'" 
+                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all"
+                    :class="selectedTab === 'past' ? 'bg-[#2D6B52] text-white shadow-sm' : 'bg-[#222F2A] text-[#D5DED8] hover:bg-[#2A3832] border border-[#344A40]'">
+                Past Sessions ({{ past_appointments.count }})
+            </button>
+            <button type="button" @click="selectedTab = 'schedule'" 
+                    class="px-5 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all"
+                    :class="selectedTab === 'schedule' ? 'bg-[#D4A55A] text-[#1A2420] shadow-sm' : 'bg-[#222F2A] text-[#D5DED8] hover:bg-[#2A3832] border border-[#344A40]'">
+                ⚙️ Manage Working Hours & Availability
             </button>
         </div>
 
         <!-- TAB 1: Today's Agenda -->
         <div x-show="selectedTab === 'today'" class="space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-stone-200/70 dark:border-slate-700 shadow-xs space-y-6">
-                <div class="flex justify-between items-center pb-4 border-b border-stone-100 dark:border-slate-700">
-                    <h2 class="font-serif font-bold text-xl text-slate-800 dark:text-white">Sessions Scheduled for Today</h2>
-                    <span class="text-xs text-stone-500 dark:text-slate-400 font-medium">{% now "F j, Y" %}</span>
+            <div class="bg-[#222F2A]/95 rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                <div class="flex justify-between items-center pb-4 border-b border-[#344A40]">
+                    <h2 class="font-heading font-bold text-xl text-[#E8EEF0]">Your Sessions Scheduled for Today</h2>
+                    <span class="text-xs text-[#6BAF8A] font-semibold">{% now "F j, Y" %}</span>
                 </div>
 
                 {% if today_appointments %}
                     <div class="space-y-6">
                         {% for appt in today_appointments %}
-                        <div class="p-6 rounded-2xl bg-stone-50 dark:bg-slate-900 border border-stone-200/70 dark:border-slate-700 space-y-4">
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-stone-200/50 dark:border-slate-800">
+                        <div class="p-6 rounded-2xl bg-[#1A2420] border border-[#344A40] space-y-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-[#344A40]">
                                 <div>
-                                    <span class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+                                    <span class="text-xs font-bold text-[#6BAF8A] uppercase tracking-wider">
                                         {{ appt.start_time|time:"g:i A" }} – {{ appt.end_time|time:"g:i A" }}
                                     </span>
-                                    <h3 class="font-serif font-bold text-lg text-slate-800 dark:text-white">
-                                        Client: {{ appt.client.get_full_name|default:appt.client.username }}
+                                    <h3 class="font-heading font-bold text-lg text-[#E8EEF0]">
+                                        Client: {{ appt.client.get_full_name|default:appt.client.username }} ({{ appt.client.email }})
                                     </h3>
-                                    <p class="text-xs text-stone-500 dark:text-slate-400 font-medium">Focus: {{ appt.get_focus_area_display }}</p>
+                                    <p class="text-xs text-[#8A9EA8] font-medium">Focus: {{ appt.get_focus_area_display }}</p>
                                 </div>
                                 <span class="px-3 py-1 text-xs font-bold rounded-lg 
-                                    {% if appt.status == 'CONFIRMED' %} bg-emerald-800 text-white 
+                                    {% if appt.status == 'CONFIRMED' %} bg-[#2D6B52] text-white 
                                     {% elif appt.status == 'COMPLETED' %} bg-sky-800 text-white 
-                                    {% else %} bg-rose-800 text-white {% endif %}">
+                                    {% else %} bg-rose-900 text-rose-200 {% endif %}">
                                     {{ appt.get_status_display }}
                                 </span>
                             </div>
 
-                            <!-- Feature 3: Pre-Session Reflection Display -->
                             {% if appt.heaviest_emotion or appt.safety_preference %}
-                            <div class="p-4 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs space-y-1.5">
-                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-800 text-white text-[10px] font-bold uppercase tracking-wider">
+                            <div class="p-4 rounded-xl bg-[#2D6B52]/20 border border-[#2D6B52]/40 text-xs space-y-1.5">
+                                <span class="px-2.5 py-0.5 rounded-full bg-[#2D6B52] text-white text-[10px] font-bold uppercase tracking-wider">
                                     Pre-Session Reflection Attached
                                 </span>
                                 {% if appt.heaviest_emotion %}
-                                    <p class="text-emerald-950 dark:text-emerald-200"><span class="font-bold">Heaviest Emotion Present:</span> {{ appt.heaviest_emotion }}</p>
+                                    <p class="text-[#E8EEF0]"><span class="font-bold text-[#D4A55A]">Heaviest Emotion Present:</span> {{ appt.heaviest_emotion }}</p>
                                 {% endif %}
                                 {% if appt.safety_preference %}
-                                    <p class="text-emerald-900 dark:text-emerald-300 italic"><span class="font-bold not-italic">Safety Request:</span> "{{ appt.safety_preference }}"</p>
+                                    <p class="text-[#D5DED8] italic"><span class="font-bold not-italic text-[#6BAF8A]">Safety Request:</span> "{{ appt.safety_preference }}"</p>
                                 {% endif %}
                             </div>
                             {% endif %}
 
                             {% if appt.notes_by_client %}
-                            <div class="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-3 rounded-xl border border-stone-200/60 dark:border-slate-700">
-                                <span class="font-semibold text-slate-800 dark:text-white block mb-1">Client Focus Note:</span>
+                            <div class="text-xs text-[#D5DED8] bg-[#222F2A] p-3 rounded-xl border border-[#344A40]">
+                                <span class="font-semibold text-[#6BAF8A] block mb-1">Client Focus Note:</span>
                                 "{{ appt.notes_by_client }}"
                             </div>
                             {% endif %}
 
-                            <!-- Therapist Private Notes Form -->
                             <form method="POST" action="{% url 'update_appointment_notes' appt.id %}" class="space-y-3 pt-2">
                                 {% csrf_token %}
-                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+                                <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider">
                                     Encrypted/Private Therapist Notes (Visible only to you)
                                 </label>
-                                <textarea name="private_therapist_notes" rows="3" class="w-full p-3 rounded-xl border border-stone-300 dark:border-slate-700 focus:border-emerald-600 text-xs text-slate-800 dark:text-white bg-white dark:bg-slate-800 outline-none" placeholder="Add confidential session notes, key observations, or clinical follow-ups...">{{ appt.private_therapist_notes }}</textarea>
+                                <textarea name="private_therapist_notes" rows="3" class="w-full p-3 rounded-xl border border-[#344A40] focus:border-[#2D6B52] text-xs text-[#E8EEF0] bg-[#222F2A] outline-none" placeholder="Add confidential session notes, key observations, or clinical follow-ups...">{{ appt.private_therapist_notes }}</textarea>
                                 
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center space-x-2">
-                                        <label class="text-xs font-medium text-stone-600 dark:text-slate-400">Status:</label>
-                                        <select name="status" class="text-xs p-1.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white">
+                                        <label class="text-xs font-medium text-[#8A9EA8]">Status:</label>
+                                        <select name="status" class="text-xs p-2 rounded-xl border border-[#344A40] bg-[#222F2A] text-[#E8EEF0]">
                                             <option value="CONFIRMED" {% if appt.status == 'CONFIRMED' %}selected{% endif %}>Confirmed</option>
                                             <option value="COMPLETED" {% if appt.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
                                             <option value="CANCELLED" {% if appt.status == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors">
+                                    <button type="submit" class="px-5 py-2 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] text-xs font-bold rounded-xl shadow-xs transition-colors">
                                         Save Private Notes
                                     </button>
                                 </div>
@@ -123,8 +131,8 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-12 text-stone-500 text-sm">
-                        No appointments scheduled for today. Enjoy your break!
+                    <div class="text-center py-12 text-[#8A9EA8] text-sm">
+                        No appointments scheduled for you today. Enjoy your peaceful break!
                     </div>
                 {% endif %}
             </div>
@@ -132,32 +140,34 @@
 
         <!-- TAB 2: Upcoming Sessions -->
         <div x-show="selectedTab === 'upcoming'" x-cloak class="space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-stone-200/70 dark:border-slate-700 shadow-xs space-y-6">
-                <h2 class="font-serif font-bold text-xl text-slate-800 dark:text-white pb-4 border-b border-stone-100 dark:border-slate-700">Upcoming Confirmed Appointments</h2>
+            <div class="bg-[#222F2A]/95 rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                <h2 class="font-heading font-bold text-xl text-[#E8EEF0] pb-4 border-b border-[#344A40]">Upcoming Confirmed Appointments</h2>
 
                 {% if upcoming_appointments %}
                     <div class="space-y-4">
                         {% for appt in upcoming_appointments %}
-                        <div class="p-5 rounded-2xl bg-stone-50 dark:bg-slate-900 border border-stone-200/60 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <div>
-                                <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-2.5 py-0.5 rounded-full">
+                        <div class="p-5 rounded-2xl bg-[#1A2420] border border-[#344A40] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold text-[#6BAF8A] bg-[#2D6B52]/25 border border-[#2D6B52]/40 px-3 py-0.5 rounded-full">
                                     {{ appt.date|date:"F j, Y (l)" }}
                                 </span>
-                                <h3 class="font-serif font-bold text-base text-slate-800 dark:text-white mt-2">
+                                <h3 class="font-heading font-bold text-base text-[#E8EEF0] mt-2">
                                     {{ appt.client.get_full_name|default:appt.client.username }} ({{ appt.client.email }})
                                 </h3>
-                                <p class="text-xs text-stone-500 dark:text-slate-400 mt-0.5">
-                                    Time: {{ appt.start_time|time:"g:i A" }} – {{ appt.end_time|time:"g:i A" }} | Focus: {{ appt.get_focus_area_display }}
+                                <p class="text-xs text-[#8A9EA8]">
+                                    Time: <strong class="text-[#D4A55A]">{{ appt.start_time|time:"g:i A" }} – {{ appt.end_time|time:"g:i A" }}</strong> | Focus: {{ appt.get_focus_area_display }}
                                 </p>
-
+                                {% if appt.notes_by_client %}
+                                    <p class="text-xs text-[#D5DED8] italic">"{{ appt.notes_by_client }}"</p>
+                                {% endif %}
                                 {% if appt.heaviest_emotion %}
-                                    <p class="text-xs text-emerald-800 dark:text-emerald-400 font-semibold mt-1">Pre-Session Emotion: {{ appt.heaviest_emotion }}</p>
+                                    <p class="text-xs text-[#6BAF8A] font-semibold">Pre-Session Emotion: {{ appt.heaviest_emotion }}</p>
                                 {% endif %}
                             </div>
 
                             <form method="POST" action="{% url 'cancel_appointment' appt.id %}">
                                 {% csrf_token %}
-                                <button type="submit" onclick="return confirm('Cancel this appointment slot?');" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-800 font-semibold hover:underline">
+                                <button type="submit" onclick="return confirm('Cancel this appointment slot?');" class="text-xs text-rose-400 hover:text-rose-300 font-semibold hover:underline">
                                     Cancel Session
                                 </button>
                             </form>
@@ -165,44 +175,116 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-12 text-stone-500 text-sm">
+                    <div class="text-center py-12 text-[#8A9EA8] text-sm">
                         No upcoming future appointments found.
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- TAB 3: Working Hours & Availability -->
+        <!-- TAB 3: Past Sessions & Notes Archive -->
+        <div x-show="selectedTab === 'past'" x-cloak class="space-y-6">
+            <div class="bg-[#222F2A]/95 rounded-3xl p-6 border border-[#344A40] shadow-md space-y-6">
+                <h2 class="font-heading font-bold text-xl text-[#E8EEF0] pb-4 border-b border-[#344A40]">Past Sessions & Clinical Notes</h2>
+
+                {% if past_appointments %}
+                    <div class="space-y-4">
+                        {% for appt in past_appointments %}
+                        <div class="p-5 rounded-2xl bg-[#1A2420] border border-[#344A40] space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-xs font-bold text-[#8A9EA8]">{{ appt.date|date:"F j, Y" }} ({{ appt.start_time|time:"g:i A" }})</span>
+                                    <h3 class="font-heading font-bold text-base text-[#E8EEF0]">
+                                        {{ appt.client.get_full_name|default:appt.client.username }} — {{ appt.get_focus_area_display }}
+                                    </h3>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold {% if appt.status == 'COMPLETED' %}bg-[#2D6B52]/30 text-[#6BAF8A]{% else %}bg-[#222F2A] text-[#8A9EA8]{% endif %}">
+                                    {{ appt.get_status_display }}
+                                </span>
+                            </div>
+                            <form method="POST" action="{% url 'update_appointment_notes' appt.id %}" class="space-y-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="{{ appt.status }}">
+                                <textarea name="private_therapist_notes" rows="2" class="w-full p-3 rounded-xl border border-[#344A40] text-xs text-[#E8EEF0] bg-[#222F2A] outline-none" placeholder="Add or update clinical session notes...">{{ appt.private_therapist_notes }}</textarea>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-4 py-2 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-semibold rounded-xl">
+                                        Update Notes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12 text-[#8A9EA8] text-sm">
+                        No past appointments recorded yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- TAB 4: Interactive Working Hours & Availability Editor -->
         <div x-show="selectedTab === 'schedule'" x-cloak class="space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-stone-200/70 dark:border-slate-700 shadow-xs space-y-6">
-                <div class="pb-4 border-b border-stone-100 dark:border-slate-700">
-                    <h2 class="font-serif font-bold text-xl text-slate-800 dark:text-white">Therapist Weekly Availability Slots</h2>
-                    <p class="text-xs text-stone-500 dark:text-slate-400 mt-1">Available time windows are automatically padded with a 15-minute de-stress buffer.</p>
+            <div class="bg-[#222F2A]/95 rounded-3xl p-6 sm:p-8 border border-[#344A40] shadow-md space-y-6">
+                <div class="pb-4 border-b border-[#344A40] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h2 class="font-heading font-bold text-xl text-[#E8EEF0]">Manage Your Weekly Availability</h2>
+                        <p class="text-xs text-[#8A9EA8] mt-1">
+                            Toggle your active working days and set your daily hours. Clients will immediately see your updated open 45-minute slots.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for avail in availabilities %}
-                    <div class="p-4 rounded-2xl bg-stone-50 dark:bg-slate-900 border border-stone-200/60 dark:border-slate-700 flex justify-between items-center">
-                        <div>
-                            <span class="font-serif font-bold text-base text-slate-800 dark:text-white block">
-                                {{ avail.get_day_of_week_display }}
-                            </span>
-                            <span class="text-xs text-emerald-800 dark:text-emerald-400 font-semibold">
-                                {{ avail.start_time|time:"g:i A" }} – {{ avail.end_time|time:"g:i A" }}
-                            </span>
+                <form method="POST" action="{% url 'update_therapist_availability' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="space-y-3">
+                        {% for day in weekly_schedule %}
+                        <div class="p-4 rounded-2xl bg-[#1A2420] border border-[#344A40] grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                            <div class="sm:col-span-3 flex items-center space-x-3">
+                                <input type="checkbox"
+                                       id="active_{{ day.day_num }}"
+                                       name="is_active_{{ day.day_num }}"
+                                       {% if day.is_active %}checked{% endif %}
+                                       class="w-4 h-4 rounded accent-[#2D6B52]">
+                                <label for="active_{{ day.day_num }}" class="font-heading font-bold text-sm text-[#E8EEF0] cursor-pointer">
+                                    {{ day.day_label }}
+                                </label>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label class="block text-[11px] text-[#6BAF8A] uppercase font-semibold mb-1">Start Time</label>
+                                <input type="time"
+                                       name="start_time_{{ day.day_num }}"
+                                       value="{{ day.start_time }}"
+                                       class="w-full p-2.5 rounded-xl border border-[#344A40] text-xs bg-[#222F2A] text-[#E8EEF0] outline-none">
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label class="block text-[11px] text-[#6BAF8A] uppercase font-semibold mb-1">End Time</label>
+                                <input type="time"
+                                       name="end_time_{{ day.day_num }}"
+                                       value="{{ day.end_time }}"
+                                       class="w-full p-2.5 rounded-xl border border-[#344A40] text-xs bg-[#222F2A] text-[#E8EEF0] outline-none">
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label class="block text-[11px] text-[#D4A55A] uppercase font-semibold mb-1">De-Stress Buffer (Mins)</label>
+                                <input type="number"
+                                       name="buffer_{{ day.day_num }}"
+                                       value="{{ day.buffer_minutes }}"
+                                       min="0" max="60" step="5"
+                                       class="w-full p-2.5 rounded-xl border border-[#344A40] text-xs bg-[#222F2A] text-[#E8EEF0] outline-none">
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                                {{ avail.buffer_minutes }}m Buffer
-                            </span>
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <div class="col-span-2 text-center py-6 text-xs text-stone-500">
-                        No weekly availability slots configured. Run seed data or add slots via Django admin.
+
+                    <div class="pt-4 flex justify-end">
+                        <button type="submit" class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs rounded-xl shadow-md transition-all">
+                            Save Weekly Schedule & Availability ✓
+                        </button>
                     </div>
-                    {% endfor %}
-                </div>
+                </form>
             </div>
         </div>
 

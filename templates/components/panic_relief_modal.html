@@ -41,7 +41,7 @@
                 <span class="px-3 py-1 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-[11px] font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
                     Somatic Grounding & Peace
                 </span>
-                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-[#E8EEF0]">
+                <h2 class="font-heading text-2xl sm:text-3xl font-bold text-[#E8EEF0]">
                     Take All the Time You Need
                 </h2>
                 <p class="text-xs text-[#8A9EA8]">You are safe here. Select a gentle exercise below.</p>
@@ -80,7 +80,7 @@
                              'scale-90 bg-[#2D6B52]/20': breathPhase === 'Exhale'
                          }"></div>
                     
-                    <div class="w-32 h-32 rounded-full bg-[#2D6B52] text-white font-serif font-bold text-sm flex flex-col items-center justify-center shadow-xl z-10 space-y-1 transition-all duration-700">
+                    <div class="w-32 h-32 rounded-full bg-[#2D6B52] text-white font-heading font-bold text-sm flex flex-col items-center justify-center shadow-xl z-10 space-y-1 transition-all duration-700">
                         <span class="text-lg" x-text="breathPhase"></span>
                         <span class="text-xs text-[#6BAF8A] font-sans" x-text="breathCount + 's'"></span>
                     </div>
@@ -108,7 +108,7 @@
                         <span class="text-[#8A9EA8]" x-text="sensoryTitles[currentSensoryStep - 1]"></span>
                     </div>
 
-                    <h3 class="font-serif font-bold text-xl text-[#E8EEF0]" x-text="sensoryPrompts[currentSensoryStep - 1]"></h3>
+                    <h3 class="font-heading font-bold text-xl text-[#E8EEF0]" x-text="sensoryPrompts[currentSensoryStep - 1]"></h3>
                     <p class="text-xs text-[#D5DED8] leading-relaxed" x-text="sensoryDetails[currentSensoryStep - 1]"></p>
                 </div>
 

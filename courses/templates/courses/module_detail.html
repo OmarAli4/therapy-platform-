@@ -3,25 +3,26 @@
 {% block title %}{{ module.title }} | {{ course.title }}{% endblock %}
 
 {% block content %}
-<div class="py-10 bg-stone-50 min-h-screen" x-data="moduleViewer({{ module.id }}, {{ is_completed|yesno:'true,false' }})">
+<div class="py-10 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-screen" x-data="moduleViewer({{ module.id }}, {{ is_completed|yesno:'true,false' }})">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <!-- Breadcrumb & Top Controls -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-stone-200/70 shadow-xs">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#222F2A]/95 p-6 rounded-3xl border border-[#344A40] shadow-md">
             <div class="space-y-1">
-                <a href="{% url 'course_detail' course.slug %}" class="text-xs font-semibold text-emerald-800 hover:underline inline-flex items-center space-x-1">
+                <a href="{% url 'course_detail' course.slug %}" class="text-xs font-semibold text-[#6BAF8A] hover:underline inline-flex items-center space-x-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     <span>Back to {{ course.title }}</span>
                 </a>
-                <h1 class="font-heading text-2xl font-bold text-slate-800">
+                <h1 class="font-heading text-2xl font-bold text-[#E8EEF0]">
                     Module {{ module.order }}: {{ module.title }}
                 </h1>
             </div>
 
             <!-- Completion Toggle Button -->
-            <button @click="toggleCompletion()" 
-                    class="px-5 py-2.5 rounded-2xl font-semibold text-xs transition-all flex items-center space-x-2"
-                    :class="completed ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs'">
+            <button type="button"
+                    @click="toggleCompletion()" 
+                    class="px-5 py-2.5 rounded-2xl font-bold text-xs transition-all flex items-center space-x-2"
+                    :class="completed ? 'bg-[#2D6B52] text-white border border-[#6BAF8A]/40' : 'bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] shadow-xs'">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
@@ -30,11 +31,11 @@
         </div>
 
         <!-- Audio-Guided Course Introduction ("Therapist Voice Note") Widget -->
-        <div class="bg-gradient-to-r from-emerald-900 to-emerald-950 text-white p-6 rounded-3xl border border-emerald-800 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="bg-[#1A2420] text-[#E8EEF0] p-6 rounded-3xl border border-[#344A40] shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-4">
                 <button type="button" 
                         @click="toggleAudio()"
-                        class="w-12 h-12 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg flex-shrink-0 transition-transform active:scale-95">
+                        class="w-12 h-12 rounded-2xl bg-[#2D6B52] hover:bg-[#3D8A6B] text-white flex items-center justify-center shadow-lg flex-shrink-0 transition-transform active:scale-95">
                     <template x-if="!isPlaying">
                         <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </template>
@@ -43,30 +44,30 @@
                     </template>
                 </button>
                 <div class="space-y-0.5">
-                    <span class="text-[11px] font-semibold text-emerald-300 uppercase tracking-wider block">
-                        🎧 Gentle Voice Guidance (0:35)
+                    <span class="text-[11px] font-semibold text-[#6BAF8A] uppercase tracking-wider block">
+                        🎧 Gentle Voice Guidance (432Hz Calming Tone)
                     </span>
-                    <p class="font-heading font-bold text-base text-white">
-                        A quick message from Dr. Elena before you begin
+                    <p class="font-heading font-bold text-base text-[#E8EEF0]">
+                        A quick grounding pause with Dr. Wessam before you begin
                     </p>
-                    <p class="text-xs text-emerald-200/80 italic">
-                        "Welcome. Take a moment to settle in comfortably..."
+                    <p class="text-xs text-[#8A9EA8] italic">
+                        "Welcome. Take a slow breath and settle in comfortably..."
                     </p>
                 </div>
             </div>
 
             <!-- Simulated audio wave visualizer -->
             <div class="flex items-center space-x-1 h-6">
-                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
-                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-4 animate-bounce' : 'h-3'"></span>
-                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
-                <span class="w-1 bg-emerald-400 rounded-full transition-all duration-300" :class="isPlaying ? 'h-5 animate-bounce' : 'h-4'"></span>
+                <span class="w-1 bg-[#6BAF8A] rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
+                <span class="w-1 bg-[#6BAF8A] rounded-full transition-all duration-300" :class="isPlaying ? 'h-4 animate-bounce' : 'h-3'"></span>
+                <span class="w-1 bg-[#6BAF8A] rounded-full transition-all duration-300" :class="isPlaying ? 'h-6 animate-pulse' : 'h-2'"></span>
+                <span class="w-1 bg-[#6BAF8A] rounded-full transition-all duration-300" :class="isPlaying ? 'h-5 animate-bounce' : 'h-4'"></span>
             </div>
         </div>
 
-        <!-- Video Player Section (if video_url is present) -->
+        <!-- Video Player Section -->
         {% if module.video_url %}
-        <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-lg aspect-video border border-stone-800 relative">
+        <div class="bg-[#1A2420] rounded-3xl overflow-hidden shadow-lg aspect-video border border-[#344A40] relative">
             <iframe class="w-full h-full" 
                     src="{{ module.video_url }}" 
                     title="{{ module.title }}" 
@@ -78,42 +79,41 @@
         {% endif %}
 
         <!-- Content & Reading Material Section -->
-        <div class="bg-white rounded-3xl p-8 border border-stone-200/70 shadow-xs space-y-6">
-            <h2 class="font-heading text-xl font-bold text-slate-800 border-b border-stone-100 pb-3">Lesson Material</h2>
-            <div class="prose prose-stone max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+        <div class="bg-[#222F2A]/95 rounded-3xl p-8 border border-[#344A40] shadow-md space-y-6">
+            <h2 class="font-heading text-xl font-bold text-[#E8EEF0] border-b border-[#344A40] pb-3">Lesson Material</h2>
+            <div class="max-w-none text-[#D5DED8] text-sm sm:text-base leading-relaxed whitespace-pre-line">
                 {{ module.content }}
             </div>
         </div>
 
         <!-- Tactile, Low-Pressure Reflection Journal Section -->
-        <div class="bg-white rounded-3xl p-8 border border-stone-200/70 shadow-xs space-y-6 relative">
+        <div class="bg-[#222F2A]/95 rounded-3xl p-8 border border-[#344A40] shadow-md space-y-6 relative">
             
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-4 border-b border-stone-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-4 border-b border-[#344A40]">
                 <div class="space-y-1">
                     <div class="flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <h2 class="font-heading font-bold text-xl text-slate-800">Your Private Reflection Journal</h2>
+                        <svg class="w-5 h-5 text-[#6BAF8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <h2 class="font-heading font-bold text-xl text-[#E8EEF0]">Your Private Reflection Journal</h2>
                     </div>
-                    <p class="text-xs text-emerald-800 font-medium">
+                    <p class="text-xs text-[#6BAF8A] font-medium">
                         "Your reflection entries are completely private to you."
                     </p>
                 </div>
             </div>
 
-            <!-- Prompt Reveal Card (Low Pressure One-at-a-Time) -->
             {% if module.reflection_prompt %}
-            <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-950 space-y-2 transition-all">
-                <div class="flex justify-between items-center text-xs font-bold text-emerald-900 uppercase tracking-wider">
+            <div class="p-5 rounded-2xl bg-[#1A2420] border border-[#344A40] text-[#E8EEF0] space-y-2 transition-all">
+                <div class="flex justify-between items-center text-xs font-bold text-[#D4A55A] uppercase tracking-wider">
                     <span>Gentle Reflection Prompt</span>
-                    <button type="button" @click="promptRevealed = !promptRevealed" class="text-emerald-800 hover:underline">
+                    <button type="button" @click="promptRevealed = !promptRevealed" class="text-[#6BAF8A] hover:underline">
                         <span x-text="promptRevealed ? 'Hide Prompt' : 'Reveal Prompt 🌿'"></span>
                     </button>
                 </div>
 
-                <div x-show="promptRevealed" x-transition class="text-xs leading-relaxed font-medium italic pt-1">
+                <div x-show="promptRevealed" x-transition class="text-xs sm:text-sm text-[#D5DED8] leading-relaxed font-medium italic pt-1">
                     "{{ module.reflection_prompt }}"
                 </div>
-                <div x-show="!promptRevealed" class="text-xs text-stone-500 italic">
+                <div x-show="!promptRevealed" class="text-xs text-[#8A9EA8] italic">
                     Click 'Reveal Prompt' when you feel ready to reflect on one thought at a time.
                 </div>
             </div>
@@ -121,20 +121,19 @@
 
             <div class="space-y-3">
                 <textarea x-model="journalText" 
-                          @input.debounce.800ms="saveJournal()"
+                          @input.debounce.800ms="saveJournal()" 
                           rows="6" 
-                          class="w-full p-4 rounded-2xl border border-stone-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm text-slate-800 bg-stone-50/50 outline-none transition-all leading-relaxed" 
+                          class="w-full p-4 rounded-2xl border border-[#344A40] focus:border-[#2D6B52] text-sm text-[#E8EEF0] bg-[#1A2420] outline-none transition-all leading-relaxed" 
                           placeholder="Write your gentle thoughts here... Changes save quietly as you type."></textarea>
                 
-                <!-- Floating Auto-Save Reassurance Banner -->
-                <div class="flex justify-between items-center text-xs text-stone-400 pt-1">
+                <div class="flex justify-between items-center text-xs text-[#8A9EA8] pt-1">
                     <span class="inline-flex items-center space-x-1.5" :class="saveStatusColor">
-                        <span class="w-2 h-2 rounded-full" :class="isSaving ? 'bg-amber-500 animate-ping' : 'bg-emerald-600'"></span>
+                        <span class="w-2 h-2 rounded-full" :class="isSaving ? 'bg-[#D4A55A] animate-ping' : 'bg-[#6BAF8A]'"></span>
                         <span x-text="saveStatusText"></span>
                     </span>
 
-                    <button type="button" @click="saveJournal()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-slate-700 font-medium rounded-xl transition-colors">
-                        Save Now
+                    <button type="button" @click="saveJournal()" class="px-5 py-2 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white font-semibold rounded-xl transition-colors">
+                        Save Reflection ✓
                     </button>
                 </div>
             </div>
@@ -144,7 +143,7 @@
         <!-- Navigation Buttons -->
         <div class="flex justify-between items-center pt-4">
             {% if prev_module %}
-                <a href="{% url 'module_detail' course.slug prev_module.id %}" class="px-6 py-3 bg-white border border-stone-300 hover:bg-stone-50 text-slate-700 font-semibold text-xs rounded-2xl transition-colors">
+                <a href="{% url 'module_detail' course.slug prev_module.id %}" class="px-6 py-3 bg-[#222F2A] border border-[#344A40] hover:bg-[#2A3832] text-[#E8EEF0] font-semibold text-xs rounded-2xl transition-colors">
                     ← Previous: {{ prev_module.title }}
                 </a>
             {% else %}
@@ -152,11 +151,11 @@
             {% endif %}
 
             {% if next_module %}
-                <a href="{% url 'module_detail' course.slug next_module.id %}" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-2xl shadow-xs transition-colors">
+                <a href="{% url 'module_detail' course.slug next_module.id %}" class="px-6 py-3 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs rounded-2xl shadow-xs transition-colors">
                     Next: {{ next_module.title }} →
                 </a>
             {% else %}
-                <a href="{% url 'course_detail' course.slug %}" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-2xl shadow-xs transition-colors">
+                <a href="{% url 'course_detail' course.slug %}" class="px-6 py-3 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs rounded-2xl shadow-xs transition-colors">
                     Finish Course Overview →
                 </a>
             {% endif %}
@@ -175,18 +174,54 @@
             journalText: `{{ journal_entry.entry_text|escapejs }}`,
             promptRevealed: true,
             isPlaying: false,
+            audioCtx: null,
+            oscNode: null,
             isSaving: false,
-            saveStatusText: '✓ Saved securely to your private sanctuary (Only you can see this)',
-            saveStatusColor: 'text-emerald-700 font-medium',
+            saveStatusText: '✓ Saved securely to your private KindSoul space',
+            saveStatusColor: 'text-[#6BAF8A] font-medium',
 
             toggleAudio() {
-                this.isPlaying = !this.isPlaying;
+                if (this.isPlaying) {
+                    this.stopAudio();
+                } else {
+                    this.startAudio();
+                }
+            },
+
+            startAudio() {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.audioCtx = new AudioCtx();
+                    this.oscNode = this.audioCtx.createOscillator();
+                    const gain = this.audioCtx.createGain();
+                    this.oscNode.type = 'sine';
+                    this.oscNode.frequency.value = 432;
+                    gain.gain.value = 0.08;
+                    this.oscNode.connect(gain);
+                    gain.connect(this.audioCtx.destination);
+                    this.oscNode.start();
+                    this.isPlaying = true;
+                } catch (e) {
+                    this.isPlaying = !this.isPlaying;
+                }
+            },
+
+            stopAudio() {
+                if (this.oscNode) {
+                    try { this.oscNode.stop(); } catch (e) {}
+                    this.oscNode = null;
+                }
+                if (this.audioCtx) {
+                    try { this.audioCtx.close(); } catch (e) {}
+                    this.audioCtx = null;
+                }
+                this.isPlaying = false;
             },
 
             saveJournal() {
                 this.isSaving = true;
                 this.saveStatusText = 'Saving quietly...';
-                this.saveStatusColor = 'text-amber-600 font-semibold';
+                this.saveStatusColor = 'text-[#D4A55A] font-semibold';
 
                 fetch("{% url 'save_journal_api' %}", {
                     method: "POST",
@@ -203,18 +238,18 @@
                 .then(data => {
                     this.isSaving = false;
                     if (data.status === 'success') {
-                        this.saveStatusText = `✓ Saved securely to your private sanctuary at ${data.updated_at}`;
-                        this.saveStatusColor = 'text-emerald-700 font-medium';
+                        this.saveStatusText = `✓ Saved securely at ${data.updated_at}`;
+                        this.saveStatusColor = 'text-[#6BAF8A] font-medium';
                     } else {
-                        this.saveStatusText = 'Save error';
-                        this.saveStatusColor = 'text-rose-600 font-semibold';
+                        this.saveStatusText = 'Please log in to save journal notes';
+                        this.saveStatusColor = 'text-rose-400 font-semibold';
                     }
                 })
                 .catch(err => {
                     console.error('Error saving journal:', err);
                     this.isSaving = false;
                     this.saveStatusText = 'Save failed';
-                    this.saveStatusColor = 'text-rose-600 font-semibold';
+                    this.saveStatusColor = 'text-rose-400 font-semibold';
                 });
             },
 

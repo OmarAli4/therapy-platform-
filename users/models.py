@@ -11,6 +11,12 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.CLIENT
     )
+    specialty = models.CharField(
+        max_length=150,
+        blank=True,
+        default='Licensed Mindful Therapist',
+        help_text='Clinical specialty shown to clients when booking'
+    )
     phone_number = models.CharField(max_length=20, blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)

@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}Book a Session | Sanctuary Therapy Practice{% endblock %}
+{% block title %}Book a Session | KindSoul Therapy Practice{% endblock %}
 
 {% block content %}
 <div class="py-12 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-[85vh]" x-data="bookingWizard()">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header -->
         <div class="text-center space-y-3 mb-10">
             <span class="px-4 py-1.5 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-xs font-semibold tracking-wide border border-[#2D6B52]/40">
                 1-on-1 Telehealth Session
             </span>
-            <h1 class="font-heading text-3xl sm:text-4xl font-bold text-[#E8EEF0]">Find a Time That Works for You</h1>
+            <h1 class="font-heading text-3xl sm:text-4xl font-bold text-[#E8EEF0]">Choose Your Therapist & Calm Time Slot</h1>
             <p class="text-[#8A9EA8] text-sm max-w-xl mx-auto">
                 Every appointment includes 45 minutes of dedicated session time plus a 15-minute de-stress buffer so your time is unhurried.
             </p>
@@ -21,27 +21,27 @@
         <div class="flex items-center justify-between mb-8 max-w-md mx-auto relative">
             <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-[#344A40] z-0"></div>
             
-            <div class="relative z-10 flex flex-col items-center">
+            <button type="button" @click="step = 1" class="relative z-10 flex flex-col items-center focus:outline-none">
                 <div class="w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center transition-colors"
                      :class="step >= 1 ? 'bg-[#2D6B52] text-white' : 'bg-[#1A2420] text-[#8A9EA8] border border-[#344A40]'">1</div>
-                <span class="text-xs font-medium text-[#D5DED8] mt-1">Focus Area</span>
-            </div>
+                <span class="text-xs font-medium text-[#D5DED8] mt-1">Therapist & Focus</span>
+            </button>
 
-            <div class="relative z-10 flex flex-col items-center">
+            <button type="button" @click="if(selectedTherapistId && selectedFocus) { step = 2; if(!selectedDate) selectQuickDate(upcomingDays[0].dateStr); }" class="relative z-10 flex flex-col items-center focus:outline-none">
                 <div class="w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center transition-colors"
                      :class="step >= 2 ? 'bg-[#2D6B52] text-white' : 'bg-[#1A2420] text-[#8A9EA8] border border-[#344A40]'">2</div>
-                <span class="text-xs font-medium text-[#D5DED8] mt-1">Date & Time</span>
-            </div>
+                <span class="text-xs font-medium text-[#D5DED8] mt-1">Date & Open Slots</span>
+            </button>
 
-            <div class="relative z-10 flex flex-col items-center">
+            <button type="button" @click="if(selectedDate && selectedSlot) step = 3" class="relative z-10 flex flex-col items-center focus:outline-none">
                 <div class="w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center transition-colors"
                      :class="step >= 3 ? 'bg-[#2D6B52] text-white' : 'bg-[#1A2420] text-[#8A9EA8] border border-[#344A40]'">3</div>
                 <span class="text-xs font-medium text-[#D5DED8] mt-1">Confirmation</span>
-            </div>
+            </button>
         </div>
 
         <!-- Form Card -->
-        <div class="bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-8 border border-[#344A40] shadow-md relative">
+        <div class="bg-[#222F2A]/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#344A40] shadow-lg relative">
             
             <!-- BREATHING INTERSTITIAL MODAL (Breathe Before You Book) -->
             <div x-show="showBreathingModal" x-transition x-cloak class="absolute inset-0 bg-[#1A2420]/95 backdrop-blur-md rounded-3xl z-40 p-8 flex flex-col items-center justify-center text-center space-y-6 text-white">
@@ -53,9 +53,8 @@
                     <p class="text-xs text-[#8A9EA8]">Booking therapy shouldn't feel rushed. Let's pause together for 5 seconds.</p>
                 </div>
 
-                <!-- Animated Expanding/Contracting Circle -->
                 <div class="relative w-32 h-32 flex items-center justify-center">
-                    <div class="absolute inset-0 rounded-full bg-[#2D6B52]/30 animate-breathe"></div>
+                    <div class="absolute inset-0 rounded-full bg-[#2D6B52]/30 animate-ping"></div>
                     <div class="w-20 h-20 rounded-full bg-[#2D6B52] text-white font-heading font-bold text-xs flex items-center justify-center shadow-lg z-10">
                         <span x-text="breathPhase"></span>
                     </div>
@@ -63,7 +62,7 @@
 
                 <div class="space-y-3 pt-2">
                     <button type="button" @click="proceedToStep2()" class="px-8 py-3 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs rounded-xl shadow-md transition-all">
-                        I'm Ready to Pick a Time
+                        I'm Ready to Pick a Time →
                     </button>
                     <br>
                     <button type="button" @click="proceedToStep2()" class="text-xs text-[#8A9EA8] hover:text-white underline">
@@ -76,25 +75,52 @@
                 {% csrf_token %}
 
                 <!-- Hidden inputs bound to Alpine state -->
+                <input type="hidden" name="therapist_id" :value="selectedTherapistId">
                 <input type="hidden" name="focus_area" :value="selectedFocus">
                 <input type="hidden" name="date" :value="selectedDate">
                 <input type="hidden" name="start_time" :value="selectedSlot ? selectedSlot.start_time : ''">
                 <input type="hidden" name="end_time" :value="selectedSlot ? selectedSlot.end_time : ''">
                 <input type="hidden" name="notes_by_client" :value="clientNotes">
 
-                <!-- STEP 1: Focus Area & Notes -->
+                <!-- STEP 1: Select Therapist + Focus Area & Notes -->
                 <div x-show="step === 1" x-transition>
-                    <h3 class="font-heading font-bold text-2xl text-[#E8EEF0] mb-2">Step 1: Select Your Focus</h3>
-                    <p class="text-xs text-[#8A9EA8] mb-6">Choose what you would like to bring into session today.</p>
+                    <h3 class="font-heading font-bold text-2xl text-[#E8EEF0] mb-1">Step 1: Choose Your Therapist</h3>
+                    <p class="text-xs text-[#8A9EA8] mb-5">Select the specialist you would like to meet with.</p>
+
+                    <!-- Therapist Selection Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <template x-for="doc in therapists" :key="doc.id">
+                            <button type="button"
+                                    @click="selectTherapist(doc.id)"
+                                    class="p-5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between"
+                                    :class="selectedTherapistId === doc.id ? 'border-[#6BAF8A] bg-[#2D6B52]/25 ring-2 ring-[#6BAF8A]/40 shadow-md' : 'border-[#344A40] hover:border-[#2D6B52]/60 bg-[#1A2420]'">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-heading font-bold text-base text-[#E8EEF0]" x-text="doc.name"></span>
+                                        <span x-show="selectedTherapistId === doc.id" class="text-xs text-[#6BAF8A] font-bold">✓ Selected</span>
+                                    </div>
+                                    <p class="text-xs font-semibold text-[#D4A55A] mb-2" x-text="doc.specialty"></p>
+                                    <p class="text-xs text-[#8A9EA8] line-clamp-3 leading-relaxed" x-text="doc.bio"></p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-[#344A40] flex items-center justify-between text-[11px] text-[#6BAF8A]">
+                                    <span>Available:</span>
+                                    <span class="font-semibold text-[#D5DED8]" x-text="doc.days_summary"></span>
+                                </div>
+                            </button>
+                        </template>
+                    </div>
+
+                    <h3 class="font-heading font-bold text-xl text-[#E8EEF0] mb-1">Select Your Session Focus</h3>
+                    <p class="text-xs text-[#8A9EA8] mb-4">Choose what you would like to bring into session today.</p>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         {% for code, label in focus_areas %}
                         <button type="button" 
                                 @click="selectedFocus = '{{ code }}'"
-                                class="p-5 rounded-2xl border text-left transition-all duration-200"
-                                :class="selectedFocus === '{{ code }}' ? 'border-[#2D6B52] bg-[#2D6B52]/20 ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] hover:border-[#2D6B52]/60 bg-[#1A2420]'">
-                            <p class="font-heading font-bold text-base text-[#E8EEF0]">{{ label }}</p>
-                            <span class="text-xs text-[#6BAF8A] mt-1 block">45-Minute Telehealth Session</span>
+                                class="p-4 rounded-2xl border text-left transition-all duration-200"
+                                :class="selectedFocus === '{{ code }}' ? 'border-[#2D6B52] bg-[#2D6B52]/25 ring-2 ring-[#2D6B52]/40' : 'border-[#344A40] hover:border-[#2D6B52]/60 bg-[#1A2420]'">
+                            <p class="font-heading font-bold text-sm text-[#E8EEF0]">{{ label }}</p>
+                            <span class="text-xs text-[#6BAF8A] mt-0.5 block">45-Minute Telehealth Session</span>
                         </button>
                         {% endfor %}
                     </div>
@@ -107,8 +133,8 @@
                     <div class="flex justify-end">
                         <button type="button" 
                                 @click="triggerBreathingPause()" 
-                                :disabled="!selectedFocus"
-                                class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] disabled:opacity-50 text-[#1A2420] font-bold text-sm rounded-xl shadow-xs transition-all">
+                                :disabled="!selectedFocus || !selectedTherapistId"
+                                class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] disabled:opacity-50 text-[#1A2420] font-bold text-sm rounded-xl shadow-md transition-all">
                             Continue to Date & Time →
                         </button>
                     </div>
@@ -116,12 +142,36 @@
 
                 <!-- STEP 2: Date & Available Time Slot Picker -->
                 <div x-show="step === 2" x-cloak x-transition>
-                    <h3 class="font-heading font-bold text-2xl text-[#E8EEF0] mb-2">Step 2: Choose Date & Time</h3>
-                    <p class="text-xs text-[#8A9EA8] mb-6">Select your preferred day. Available calm slots will update automatically.</p>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-4 border-b border-[#344A40]">
+                        <div>
+                            <h3 class="font-heading font-bold text-2xl text-[#E8EEF0]">Step 2: Choose Date & Time</h3>
+                            <p class="text-xs text-[#8A9EA8]">
+                                Viewing open calendar slots for <strong class="text-[#6BAF8A]" x-text="currentTherapist.name"></strong>
+                                (Working days: <span class="text-[#D4A55A] font-semibold" x-text="currentTherapist.days_summary"></span>)
+                            </p>
+                        </div>
+                        <button type="button" @click="step = 1" class="text-xs text-[#D4A55A] font-semibold hover:underline self-start sm:self-auto">
+                            ← Change Therapist
+                        </button>
+                    </div>
 
                     <div class="space-y-6 mb-8">
+                        <!-- Quick Upcoming Days Buttons -->
                         <div>
-                            <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-2">Select Date</label>
+                            <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-2">Quick Select Upcoming Day:</label>
+                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5 mb-4">
+                                <template x-for="dayObj in upcomingDays" :key="dayObj.dateStr">
+                                    <button type="button"
+                                            @click="selectQuickDate(dayObj.dateStr)"
+                                            :class="selectedDate === dayObj.dateStr ? 'bg-[#D4A55A] text-[#1A2420] border-[#D4A55A] font-bold shadow-sm' : 'bg-[#1A2420] text-[#D5DED8] border-[#344A40] hover:border-[#6BAF8A]'"
+                                            class="p-2.5 rounded-xl border text-center transition-all">
+                                        <span class="text-[10px] uppercase block opacity-80" x-text="dayObj.dayName"></span>
+                                        <span class="text-xs font-bold block mt-0.5" x-text="dayObj.monthDay"></span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <label class="block text-xs font-semibold text-[#8A9EA8] uppercase tracking-wider mb-1.5">Or Pick Any Custom Date:</label>
                             <input type="date" 
                                    x-model="selectedDate" 
                                    @change="fetchSlots()" 
@@ -131,25 +181,19 @@
 
                         <!-- Slots Grid -->
                         <div>
-                            <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-2">Available Time Slots</label>
+                            <label class="block text-xs font-semibold text-[#6BAF8A] uppercase tracking-wider mb-2">Available 45-Minute Time Slots:</label>
 
                             <template x-if="loadingSlots">
                                 <div class="p-8 text-center text-xs text-[#8A9EA8] flex items-center justify-center space-x-2">
                                     <div class="w-3 h-3 rounded-full bg-[#6BAF8A] animate-ping"></div>
-                                    <span>Creating a quiet space for you...</span>
+                                    <span>Checking <span x-text="currentTherapist.name"></span>'s open slots...</span>
                                 </div>
                             </template>
 
                             <template x-if="!loadingSlots && availableSlots.length === 0 && selectedDate">
-                                <div class="p-6 rounded-2xl bg-[#1A2420] border border-[#D4A55A]/40 text-[#D4A55A] text-xs text-center space-y-1">
-                                    <p class="font-bold">No open slots on this day</p>
-                                    <p>Therapist is unavailable or fully booked on this date. Please pick another date (Mon–Fri).</p>
-                                </div>
-                            </template>
-
-                            <template x-if="!selectedDate">
-                                <div class="p-6 rounded-2xl bg-[#1A2420] border border-[#344A40] text-[#8A9EA8] text-xs text-center">
-                                    Please pick a date above to view open times.
+                                <div class="p-6 rounded-2xl bg-[#1A2420] border border-[#D4A55A]/40 text-[#D4A55A] text-xs text-center space-y-2">
+                                    <p class="font-bold text-sm"><span x-text="currentTherapist.name"></span> is off or fully booked on <span x-text="selectedDate"></span>.</p>
+                                    <p class="text-[#D5DED8]">Available working days: <strong class="text-[#6BAF8A]" x-text="currentTherapist.days_summary"></strong>. Tap another day button above!</p>
                                 </div>
                             </template>
 
@@ -158,7 +202,7 @@
                                     <button type="button" 
                                             @click="selectedSlot = slot"
                                             class="p-3.5 rounded-xl border text-center text-xs font-semibold transition-all duration-150"
-                                            :class="selectedSlot && selectedSlot.start_time === slot.start_time ? 'border-[#2D6B52] bg-[#2D6B52] text-white shadow-xs' : 'border-[#344A40] bg-[#1A2420] text-[#D5DED8] hover:border-[#6BAF8A] hover:bg-[#2D6B52]/20'">
+                                            :class="selectedSlot && selectedSlot.start_time === slot.start_time ? 'border-[#D4A55A] bg-[#D4A55A] text-[#1A2420] font-bold shadow-md scale-[1.02]' : 'border-[#344A40] bg-[#1A2420] text-[#E8EEF0] hover:border-[#6BAF8A] hover:bg-[#2D6B52]/25'">
                                         <span x-text="slot.display"></span>
                                     </button>
                                 </template>
@@ -173,7 +217,7 @@
                         <button type="button" 
                                 @click="step = 3" 
                                 :disabled="!selectedDate || !selectedSlot"
-                                class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] disabled:opacity-50 text-[#1A2420] font-bold text-sm rounded-xl shadow-xs transition-all">
+                                class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] disabled:opacity-50 text-[#1A2420] font-bold text-sm rounded-xl shadow-md transition-all">
                             Review Session →
                         </button>
                     </div>
@@ -185,6 +229,13 @@
                     <p class="text-xs text-[#8A9EA8] mb-6">Please verify your session details before reserving your slot.</p>
 
                     <div class="bg-[#1A2420] p-6 rounded-2xl border border-[#344A40] space-y-4 mb-8">
+                        <div class="flex justify-between border-b border-[#344A40] pb-3 text-sm">
+                            <span class="text-[#8A9EA8] font-medium">Selected Therapist:</span>
+                            <div class="text-right">
+                                <span class="font-bold text-[#E8EEF0] block" x-text="currentTherapist.name"></span>
+                                <span class="text-xs text-[#D4A55A]" x-text="currentTherapist.specialty"></span>
+                            </div>
+                        </div>
                         <div class="flex justify-between border-b border-[#344A40] pb-3 text-sm">
                             <span class="text-[#8A9EA8] font-medium">Focus Area:</span>
                             <span class="font-bold text-[#E8EEF0]" x-text="selectedFocus"></span>
@@ -215,7 +266,7 @@
                             ← Edit Slot
                         </button>
                         <button type="submit" class="px-8 py-3.5 bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-sm rounded-xl shadow-md transition-all">
-                            Confirm & Reserve Session
+                            Confirm & Reserve Session ✓
                         </button>
                     </div>
                 </div>
@@ -230,16 +281,58 @@
 {% block extra_js %}
 <script>
     function bookingWizard() {
+        const therapistsList = {{ therapists_json|safe }};
+        const initialTherapistId = Number("{{ selected_therapist_id }}") || (therapistsList.length ? therapistsList[0].id : null);
+
+        // Generate next 6 days starting tomorrow (or today) for 1-click selection
+        const upcoming = [];
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        for (let i = 1; i <= 6; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            upcoming.push({
+                dateStr: `${yyyy}-${mm}-${dd}`,
+                dayName: dayNames[d.getDay()],
+                monthDay: `${monthNames[d.getMonth()]} ${d.getDate()}`
+            });
+        }
+
         return {
             step: 1,
             showBreathingModal: false,
             breathPhase: 'Inhale...',
+            therapists: therapistsList,
+            selectedTherapistId: initialTherapistId,
             selectedFocus: 'ANXIETY',
             clientNotes: '',
-            selectedDate: '',
+            upcomingDays: upcoming,
+            selectedDate: upcoming[0].dateStr,
             availableSlots: [],
             selectedSlot: null,
             loadingSlots: false,
+
+            init() {
+                this.fetchSlots();
+            },
+
+            get currentTherapist() {
+                return this.therapists.find(t => t.id === this.selectedTherapistId) || this.therapists[0] || { name: 'Therapist', specialty: '', days_summary: '' };
+            },
+
+            selectTherapist(id) {
+                this.selectedTherapistId = id;
+                this.selectedSlot = null;
+                this.fetchSlots();
+            },
+
+            selectQuickDate(dateStr) {
+                this.selectedDate = dateStr;
+                this.fetchSlots();
+            },
 
             triggerBreathingPause() {
                 this.showBreathingModal = true;
@@ -260,14 +353,17 @@
             proceedToStep2() {
                 this.showBreathingModal = false;
                 this.step = 2;
+                if (!this.availableSlots.length) {
+                    this.fetchSlots();
+                }
             },
 
             fetchSlots() {
-                if (!this.selectedDate) return;
+                if (!this.selectedDate || !this.selectedTherapistId) return;
                 this.loadingSlots = true;
                 this.selectedSlot = null;
 
-                fetch(`/book/api/available-slots/?date=${this.selectedDate}`)
+                fetch(`/book/api/available-slots/?date=${this.selectedDate}&therapist_id=${this.selectedTherapistId}`)
                     .then(res => res.json())
                     .then(data => {
                         this.availableSlots = data.slots || [];

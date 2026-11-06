@@ -24,7 +24,7 @@
 
     <!-- Daily Affirmation Quote Display -->
     <div class="relative z-10 space-y-3 py-2">
-        <blockquote class="font-serif italic text-xl sm:text-2xl text-stone-100 leading-relaxed max-w-2xl">
+        <blockquote class="font-heading font-medium text-xl sm:text-2xl text-stone-100 leading-relaxed max-w-2xl">
             "<span x-text="currentAffirmation.text"></span>"
         </blockquote>
         <p class="text-xs text-emerald-300 font-medium" x-text="'— ' + currentAffirmation.author"></p>
@@ -63,7 +63,7 @@
 
             <div class="space-y-1">
                 <span class="text-xs font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">Your Saved Collection</span>
-                <h3 class="font-serif text-2xl font-bold text-stone-900 dark:text-white">My Pocket Affirmations 🔖</h3>
+                <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-white">My Pocket Affirmations 🔖</h3>
             </div>
 
             <template x-if="savedPocket.length === 0">
@@ -76,7 +76,7 @@
                 <template x-for="(item, idx) in savedPocket" :key="idx">
                     <div class="p-4 rounded-2xl bg-stone-50 dark:bg-slate-800 border border-stone-200/70 dark:border-slate-700 flex justify-between items-start gap-3">
                         <div class="space-y-1">
-                            <p class="font-serif italic text-xs text-slate-800 dark:text-slate-100" x-text="'&ldquo;' + item.text + '&rdquo;'"></p>
+                            <p class="font-sans font-medium text-xs text-slate-800 dark:text-slate-100" x-text="'&ldquo;' + item.text + '&rdquo;'"></p>
                             <p class="text-[10px] text-emerald-800 dark:text-emerald-400 font-semibold" x-text="'— ' + item.author"></p>
                         </div>
                         <button type="button" @click="removeFromPocket(idx)" class="text-stone-400 hover:text-rose-600 text-xs p-1">
@@ -107,11 +107,11 @@
             openPocketModal: false,
 
             affirmationsList: [
-                { text: "You don't need to earn rest. Your worth is inherent and unchanging.", author: "Sanctuary Daily Reminder" },
+                { text: "You don't need to earn rest. Your worth is inherent and unchanging.", author: "KindSoul Daily Reminder" },
                 { text: "You are allowed to take up space, speak your truth, and move at your own pace.", author: "Self-Compassion Principle" },
                 { text: "Whatever you are feeling right now is valid. Take a deep breath and give yourself grace.", author: "Mindful Anchor" },
                 { text: "Healing is not linear. Celebrating your quiet progress is enough for today.", author: "Somatic Wisdom" },
-                { text: "You do not have to carry the weight of the entire world on your shoulders.", author: "Sanctuary Daily Reminder" },
+                { text: "You do not have to carry the weight of the entire world on your shoulders.", author: "KindSoul Daily Reminder" },
                 { text: "Your boundaries are an act of self-love, not selfishness.", author: "Emotional Wellness Rule" },
                 { text: "Resting is an act of courage in a world that demands constant busyness.", author: "Mindful Anchor" }
             ],

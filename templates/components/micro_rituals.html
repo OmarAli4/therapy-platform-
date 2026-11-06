@@ -11,7 +11,7 @@
                 </span>
                 <span class="text-xs text-[#6BAF8A] font-semibold" x-text="'Streak: ' + streak + ' days 🔥'"></span>
             </div>
-            <h3 class="font-serif font-bold text-2xl text-[#E8EEF0] mt-1">Dr. Wessam's Mindful Micro-Rituals</h3>
+            <h3 class="font-heading font-bold text-2xl text-[#E8EEF0] mt-1">Dr. Wessam's Mindful Micro-Rituals</h3>
             <p class="text-xs text-[#8A9EA8] mt-0.5">Simple 60-second micro-habits to soothe your nervous system throughout the day.</p>
         </div>
 
@@ -31,13 +31,13 @@
                 </div>
                 <div>
                     <span class="text-[11px] font-semibold text-[#6BAF8A] uppercase tracking-wider block" x-text="currentRitual.category"></span>
-                    <h4 class="font-serif font-bold text-xl text-[#E8EEF0]" x-text="currentRitual.title"></h4>
+                    <h4 class="font-heading font-bold text-xl text-[#E8EEF0]" x-text="currentRitual.title"></h4>
                 </div>
             </div>
 
             <!-- 60-Second Timer Circle -->
             <div class="flex items-center space-x-3 bg-[#222F2A] px-4 py-2 rounded-xl border border-[#344A40]">
-                <span class="font-serif font-bold text-lg text-[#D4A55A]" x-text="timeLeft + 's'"></span>
+                <span class="font-heading font-bold text-lg text-[#D4A55A]" x-text="timeLeft + 's'"></span>
                 <button type="button" 
                         @click="toggleTimer()"
                         class="px-3 py-1 bg-[#2D6B52] hover:bg-[#3D8A6B] text-white text-xs font-bold rounded-lg transition-colors"
@@ -47,7 +47,7 @@
         </div>
 
         <!-- Instructions -->
-        <div class="p-4 rounded-xl bg-[#222F2A] border border-[#344A40] text-xs text-[#D5DED8] leading-relaxed italic font-serif space-y-2">
+        <div class="p-4 rounded-xl bg-[#222F2A] border border-[#344A40] text-xs text-[#D5DED8] leading-relaxed font-sans space-y-2">
             <p x-text="currentRitual.instruction"></p>
             <p class="text-[11px] text-[#6BAF8A] font-sans font-semibold not-italic" x-text="'Somatic Benefit: ' + currentRitual.benefit"></p>
         </div>

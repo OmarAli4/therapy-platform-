@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     BookingView, AvailableSlotsApiView, TherapistDashboardView,
-    UpdateAppointmentNotesView, CancelAppointmentView, SavePreSessionPrepApiView
+    UpdateAppointmentNotesView, CancelAppointmentView, SavePreSessionPrepApiView,
+    UpdateTherapistAvailabilityView
 )
 
 urlpatterns = [
@@ -9,6 +10,7 @@ urlpatterns = [
     path('api/available-slots/', AvailableSlotsApiView.as_view(), name='available_slots_api'),
     path('<int:pk>/pre-session-prep/', SavePreSessionPrepApiView.as_view(), name='save_pre_session_prep_api'),
     path('dashboard/therapist/', TherapistDashboardView.as_view(), name='therapist_dashboard'),
+    path('dashboard/therapist/availability/', UpdateTherapistAvailabilityView.as_view(), name='update_therapist_availability'),
     path('<int:pk>/notes/', UpdateAppointmentNotesView.as_view(), name='update_appointment_notes'),
     path('<int:pk>/cancel/', CancelAppointmentView.as_view(), name='cancel_appointment'),
 ]

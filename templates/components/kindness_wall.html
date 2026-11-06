@@ -10,7 +10,7 @@
                     💌 Community Warmth
                 </span>
             </div>
-            <h3 class="font-serif font-bold text-2xl text-[#E8EEF0] mt-1">Wall of Gentle Kindness</h3>
+            <h3 class="font-heading font-bold text-2xl text-[#E8EEF0] mt-1">Wall of Gentle Kindness</h3>
             <p class="text-xs text-[#8A9EA8] mt-0.5">Short encouraging notes left by visitors to comfort strangers in need.</p>
         </div>
 
@@ -29,7 +29,7 @@
             
             <div class="space-y-2">
                 <span class="text-xl block text-[#D4A55A]">“</span>
-                <p class="font-serif italic text-xs text-[#D5DED8] leading-relaxed">
+                <p class="font-sans font-normal text-xs text-[#D5DED8] leading-relaxed">
                     {{ note.text }}
                 </p>
             </div>
@@ -63,7 +63,7 @@
              class="bg-[#222F2A] border border-[#344A40] rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
             
             <div class="flex justify-between items-center pb-2 border-b border-[#344A40]">
-                <h4 class="font-serif font-bold text-lg text-[#E8EEF0]">Leave a Gentle Note 💌</h4>
+                <h4 class="font-heading font-bold text-lg text-[#E8EEF0]">Leave a Gentle Note 💌</h4>
                 <button type="button" @click="openModal = false" class="text-[#8A9EA8] hover:text-[#E8EEF0] text-sm">✕</button>
             </div>
 
@@ -75,7 +75,7 @@
                     <textarea x-model="newText" 
                               rows="3" 
                               maxlength="280"
-                              class="w-full p-3 rounded-xl border border-[#344A40] text-xs text-[#E8EEF0] bg-[#1A2420] outline-none font-serif italic focus:border-[#2D6B52]" 
+                              class="w-full p-3 rounded-xl border border-[#344A40] text-xs text-[#E8EEF0] bg-[#1A2420] outline-none font-sans focus:border-[#2D6B52]" 
                               placeholder="e.g. You are doing enough today. Take a gentle breath..."></textarea>
                 </div>
 

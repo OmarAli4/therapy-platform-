@@ -80,7 +80,9 @@ class LandingView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['courses'] = Course.objects.filter(is_published=True)[:3]
-        context['therapist'] = User.objects.filter(role=User.Role.THERAPIST).first()
+        therapists = User.objects.filter(role=User.Role.THERAPIST, is_active=True).prefetch_related('availabilities').order_by('id')
+        context['therapists'] = therapists
+        context['therapist'] = therapists.first()
         return context
 
 
@@ -106,7 +108,7 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        messages.success(self.request, "Welcome to Sanctuary. We are so glad you are here.")
+        messages.success(self.request, "Welcome to KindSoul. We are so glad you are here.")
         return redirect(self.success_url)
 
 
@@ -209,11 +211,11 @@ class ClientDashboardView(LoginRequiredMixin, TemplateView):
         context['upcoming_appointments'] = Appointment.objects.filter(
             client=user, 
             status=Appointment.Status.CONFIRMED
-        ).order_by('date', 'start_time')
+        ).select_related('therapist').order_by('date', 'start_time')
         
         context['past_appointments'] = Appointment.objects.filter(
             client=user
-        ).exclude(status=Appointment.Status.CONFIRMED).order_by('-date', '-start_time')
+        ).exclude(status=Appointment.Status.CONFIRMED).select_related('therapist').order_by('-date', '-start_time')
 
         # Courses & progress
         courses = Course.objects.filter(is_published=True)

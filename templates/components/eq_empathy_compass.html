@@ -1,0 +1,338 @@
+<!-- KindSoul Emotional Intelligence (RULER) & Self-Compassion Compass -->
+<!-- EASY EDIT GUIDE: To add/edit emotions or self-compassion reframes in the future, simply edit the `quadrants` and `reframes` arrays inside eqEmpathyCompass() below! -->
+<div x-data="eqEmpathyCompass()" class="bg-[#222F2A]/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#344A40] shadow-lg relative overflow-hidden space-y-8">
+
+    <!-- Header & Mode Switcher -->
+    <div class="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#344A40]">
+        <div class="space-y-2">
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#2D6B52]/25 border border-[#2D6B52]/40 text-[#6BAF8A] text-[11px] font-bold tracking-wider uppercase">
+                <span>🧠</span>
+                <span>Yale RULER & Kristin Neff Framework</span>
+            </div>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-[#E8EEF0]">Emotional Granularity & Empathy Compass</h2>
+            <p class="text-[#8A9EA8] text-xs sm:text-sm max-w-2xl leading-relaxed">
+                Neuroscience shows that <strong class="font-semibold text-[#E8EEF0]">"Naming It to Tame It"</strong> (Affect Labeling) reduces amygdala reactivity, while <strong class="font-semibold text-[#D4A55A]">Self-Compassion</strong> releases oxytocin to soothe your inner critic.
+            </p>
+        </div>
+
+        <!-- Interactive Mode Tabs -->
+        <div class="inline-flex bg-[#1A2420] p-1.5 rounded-2xl border border-[#344A40] self-start lg:self-auto shrink-0">
+            <button type="button"
+                    @click="activeTab = 'compass'"
+                    :class="activeTab === 'compass' ? 'bg-[#2D6B52] text-white shadow-sm font-bold' : 'text-[#8A9EA8] hover:text-[#E8EEF0] font-medium'"
+                    class="px-4 py-2.5 rounded-xl text-xs transition-all duration-200 flex items-center space-x-2">
+                <span>🧭</span>
+                <span>1. Name Your Emotion (EQ)</span>
+            </button>
+            <button type="button"
+                    @click="activeTab = 'reframer'"
+                    :class="activeTab === 'reframer' ? 'bg-[#D4A55A] text-[#1A2420] shadow-sm font-bold' : 'text-[#8A9EA8] hover:text-[#E8EEF0] font-medium'"
+                    class="px-4 py-2.5 rounded-xl text-xs transition-all duration-200 flex items-center space-x-2">
+                <span>💛</span>
+                <span>2. Self-Compassion Reframer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TAB 1: YALE RULER EMOTIONAL GRANULARITY COMPASS -->
+    <div x-show="activeTab === 'compass'" x-transition class="relative z-10 space-y-6">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-3">
+                Step 1: Where does your energy sit right now?
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <template x-for="(q, index) in quadrants" :key="q.id">
+                    <button type="button"
+                            @click="selectQuadrant(index)"
+                            :class="selectedQuadrantIndex === index ? 'bg-[#2D6B52]/30 border-[#6BAF8A] ring-2 ring-[#6BAF8A]/40 shadow-md' : 'bg-[#1A2420] hover:bg-[#2A3832] border-[#344A40]'"
+                            class="p-5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-2xl" x-text="q.icon"></span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#222F2A] text-[#D4A55A] border border-[#344A40]" x-text="q.energyTag"></span>
+                            </div>
+                            <h3 class="font-heading text-base font-bold text-[#E8EEF0] mb-1" x-text="q.title"></h3>
+                            <p class="text-xs text-[#8A9EA8] leading-relaxed" x-text="q.subtitle"></p>
+                        </div>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Step 2: Select Precise Granular Emotion Word -->
+        <div class="bg-[#1A2420] rounded-3xl p-6 sm:p-8 border border-[#344A40] space-y-6">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-3">
+                    Step 2: Choose the exact shade of this feeling (Emotional Granularity)
+                </p>
+                <div class="flex flex-wrap gap-2.5">
+                    <template x-for="(nuance, nIdx) in currentQuadrant.emotions" :key="nuance.word">
+                        <button type="button"
+                                @click="selectedEmotionIndex = nIdx"
+                                :class="selectedEmotionIndex === nIdx ? 'bg-[#D4A55A] text-[#1A2420] border-[#D4A55A] font-bold shadow-sm' : 'bg-[#222F2A] hover:bg-[#2A3832] text-[#D5DED8] border-[#344A40] font-medium'"
+                                class="px-4 py-2 rounded-full text-xs sm:text-sm border transition-all duration-200">
+                            <span x-text="nuance.word"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Step 3: Science + Soul Insight Card for Selected Emotion -->
+            <div x-show="currentEmotion" x-transition class="bg-[#222F2A] rounded-2xl p-6 border border-[#344A40] space-y-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#344A40]">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-widest text-[#6BAF8A] font-bold">Precise Affect Label</span>
+                        <h4 class="font-heading text-2xl font-bold text-[#E8EEF0] mt-0.5" x-text="currentEmotion.word"></h4>
+                    </div>
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-[#1A2420] border border-[#344A40] text-[#D4A55A] text-xs font-medium">
+                        <span>🧬</span>
+                        <span x-text="currentEmotion.scienceNote"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="bg-[#1A2420] p-5 rounded-2xl border border-[#344A40]">
+                        <div class="text-xs font-bold uppercase tracking-wider text-[#D4A55A] mb-2">🕊️ What Your Soul Is Asking For</div>
+                        <p class="text-[#D5DED8] text-xs sm:text-sm leading-relaxed" x-text="currentEmotion.soulMessage"></p>
+                    </div>
+                    <div class="bg-[#2D6B52]/20 p-5 rounded-2xl border border-[#2D6B52]/40 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-2">🌿 60-Second Micro-Action</div>
+                            <p class="text-[#E8EEF0] text-xs sm:text-sm leading-relaxed font-medium" x-text="currentEmotion.microAction"></p>
+                        </div>
+                        <div class="pt-2 flex flex-wrap gap-2">
+                            <button type="button"
+                                    @click="activeTab = 'reframer'"
+                                    class="px-3.5 py-1.5 rounded-xl bg-[#D4A55A] hover:bg-[#E8C47A] text-[#1A2420] font-bold text-xs transition-colors">
+                                Open Self-Compassion Reframer 💛
+                            </button>
+                            <button type="button"
+                                    @click="$dispatch('open-grounding')"
+                                    class="px-3.5 py-1.5 rounded-xl bg-[#2D6B52] hover:bg-[#3D8A6B] text-white font-semibold text-xs transition-colors">
+                                Start 4-7-8 Breathing 🫁
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: KRISTIN NEFF SELF-COMPASSION REFRAMER -->
+    <div x-show="activeTab === 'reframer'" x-transition x-cloak class="relative z-10 space-y-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-[#D4A55A]">
+            Select a harsh thought your inner critic is repeating today:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <template x-for="(item, idx) in reframes" :key="idx">
+                <button type="button"
+                        @click="selectedReframeIndex = idx"
+                        :class="selectedReframeIndex === idx ? 'bg-[#2D6B52]/30 border-[#D4A55A] ring-2 ring-[#D4A55A]/40 shadow-md' : 'bg-[#1A2420] hover:bg-[#2A3832] border-[#344A40]'"
+                        class="p-5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between space-y-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#D4A55A]" x-text="item.category"></span>
+                    <p class="text-sm font-heading font-semibold text-[#E8EEF0]" x-text="'“' + item.criticVoice + '”'"></p>
+                </button>
+            </template>
+        </div>
+
+        <!-- 3 Pillars of Self-Compassion Transformation -->
+        <div class="bg-[#1A2420] rounded-3xl p-6 sm:p-8 border border-[#344A40] space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-[#222F2A] p-5 rounded-2xl border border-[#344A40]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-2">1. Mindful Acceptance</div>
+                    <p class="text-xs sm:text-sm text-[#D5DED8] leading-relaxed" x-text="currentReframe.mindfulness"></p>
+                </div>
+                <div class="bg-[#222F2A] p-5 rounded-2xl border border-[#344A40]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-[#6BAF8A] mb-2">2. Common Humanity</div>
+                    <p class="text-xs sm:text-sm text-[#D5DED8] leading-relaxed" x-text="currentReframe.commonHumanity"></p>
+                </div>
+                <div class="bg-[#222F2A] p-5 rounded-2xl border border-[#2D6B52]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-[#D4A55A] mb-2">3. Self-Kindness</div>
+                    <p class="text-xs sm:text-sm text-[#E8EEF0] font-medium leading-relaxed" x-text="currentReframe.selfKindness"></p>
+                </div>
+            </div>
+
+            <div class="bg-[#2D6B52] text-white p-6 rounded-2xl border border-[#6BAF8A]/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="text-xs font-bold uppercase tracking-wider text-[#D4A55A] mb-1">💛 Place a warm hand over your heart and whisper:</div>
+                    <p class="text-base sm:text-lg font-heading font-bold text-white" x-text="'“' + currentReframe.healingMantra + '”'"></p>
+                </div>
+                <button type="button"
+                        @click="activeTab = 'compass'"
+                        class="px-4 py-2 rounded-xl bg-[#1A2420]/60 hover:bg-[#1A2420] text-[#E8EEF0] text-xs font-semibold shrink-0 transition-colors">
+                    ← Back to Emotion Compass
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function eqEmpathyCompass() {
+    return {
+        activeTab: 'compass',
+        selectedQuadrantIndex: 0,
+        selectedEmotionIndex: 0,
+
+        quadrants: [
+            {
+                id: 'high-unpleasant',
+                icon: '⚡',
+                title: 'Wired & Stormy',
+                energyTag: 'High Energy • Tense',
+                subtitle: 'Heart racing, racing thoughts, feeling pressured or on edge.',
+                emotions: [
+                    {
+                        word: 'Overwhelmed',
+                        scienceNote: 'Prefrontal cortex overloaded by too many open loops',
+                        soulMessage: 'You are trying to carry tomorrow, next week, and everyone else’s expectations in a single breath.',
+                        microAction: 'Do two quick inhales through the nose followed by one long, slow sigh out the mouth (Stanford Physiological Sigh), then pick just ONE tiny task.'
+                    },
+                    {
+                        word: 'Anxious & Hypervigilant',
+                        scienceNote: 'Sympathetic nervous system scanning for future threats',
+                        soulMessage: 'Your body is trying deeply to protect you, even though you are safe in this exact room right now.',
+                        microAction: 'Press both feet firmly into the floor for 10 seconds and name 3 green or warm-colored objects around you.'
+                    },
+                    {
+                        word: 'Frustrated & Unheard',
+                        scienceNote: 'Blocked goal pathway triggering adrenaline release',
+                        soulMessage: 'A boundary or deeply held value of yours is asking to be respected and acknowledged.',
+                        microAction: 'Unclench your jaw, drop your shoulders away from your ears, and write down what boundary needs protection.'
+                    },
+                    {
+                        word: 'Restless & Scattered',
+                        scienceNote: 'Dopamine-cortisol loop from continuous attention switching',
+                        soulMessage: 'Your mind has been pulled in ten directions and craves a single quiet anchor.',
+                        microAction: 'Turn your phone face-down and gaze out a window or at a distant wall for 45 seconds without focusing.'
+                    }
+                ]
+            },
+            {
+                id: 'low-unpleasant',
+                icon: '🌧️',
+                title: 'Heavy & Drained',
+                energyTag: 'Low Energy • Heavy',
+                subtitle: 'Exhausted, numb, disconnected, or carrying quiet sorrow.',
+                emotions: [
+                    {
+                        word: 'Emotionally Exhausted',
+                        scienceNote: 'Parasympathetic dorsal vagal conservation response',
+                        soulMessage: 'You have been strong and empathetic for too long without refilling your own well.',
+                        microAction: 'Give yourself explicit permission to pause productivity for the next 10 minutes without guilt.'
+                    },
+                    {
+                        word: 'Lonely & Unseen',
+                        scienceNote: 'Social baseline neural network seeking safe co-regulation',
+                        soulMessage: 'Your heart is longing for genuine, unmasked human connection—starting with your own warmth.',
+                        microAction: 'Wrap your arms gently around your opposite shoulders in a self-hug for 20 seconds to release soothing oxytocin.'
+                    },
+                    {
+                        word: 'Self-Critical & Ashamed',
+                        scienceNote: 'Threat-defense system turned inward toward the self',
+                        soulMessage: 'You are judging your human imperfection instead of offering yourself the grace you give friends.',
+                        microAction: 'Tap "Open Self-Compassion Reframer" below to translate this harsh inner voice into warmth.'
+                    },
+                    {
+                        word: 'Grief-Touched & Tender',
+                        scienceNote: 'Attachment neural pathways processing loss or transition',
+                        soulMessage: 'Tenderness is the price of having cared deeply. Your softness is a strength, not a flaw.',
+                        microAction: 'Drink a warm sip of water or tea slowly, honoring whatever feeling is present without rushing to fix it.'
+                    }
+                ]
+            },
+            {
+                id: 'low-pleasant',
+                icon: '🌿',
+                title: 'Safe & Grounded',
+                energyTag: 'Calm Energy • Serene',
+                subtitle: 'Breathing steady, present, open, and gently at ease.',
+                emotions: [
+                    {
+                        word: 'Grounded & Present',
+                        scienceNote: 'Ventral vagal social engagement & safety state active',
+                        soulMessage: 'Your mind and body are in harmony right here in the present moment.',
+                        microAction: 'Savor this feeling for 20 seconds so your nervous system encodes what safety feels like.'
+                    },
+                    {
+                        word: 'Grateful & Warm',
+                        scienceNote: 'Serotonin & dopamine boost in the anterior cingulate cortex',
+                        soulMessage: 'You are noticing the quiet gifts woven into an ordinary day.',
+                        microAction: 'Send a 1-sentence appreciation text to someone you care about—or write one to yourself.'
+                    },
+                    {
+                        word: 'Relieved & Unburdened',
+                        scienceNote: 'Cortisol clearance and autonomic recovery phase',
+                        soulMessage: 'You survived what you once worried you couldn’t handle.',
+                        microAction: 'Take one slow deep breath and thank your body for carrying you through.'
+                    }
+                ]
+            },
+            {
+                id: 'high-pleasant',
+                icon: '☀️',
+                title: 'Inspired & Connected',
+                energyTag: 'Warm Energy • Alive',
+                subtitle: 'Curious, hopeful, compassionate, and creatively engaged.',
+                emotions: [
+                    {
+                        word: 'Hopeful & Curious',
+                        scienceNote: 'Prefrontal exploration & neuroplastic learning state',
+                        soulMessage: 'You are open to growth and trusting the unfolding path ahead.',
+                        microAction: 'Write down one small intention or creative idea while this gentle spark is present.'
+                    },
+                    {
+                        word: 'Compassionate & Empathetic',
+                        scienceNote: 'Vagus nerve & caregiving neural circuitry activated',
+                        soulMessage: 'Your heart is wide enough to hold both your own humanity and the humanity of others.',
+                        microAction: 'Leave an anonymous note on the Wall of Gentle Kindness below to pass this warmth forward.'
+                    }
+                ]
+            }
+        ],
+
+        selectedReframeIndex: 0,
+        reframes: [
+            {
+                category: 'Perfectionism & Mistakes',
+                criticVoice: 'I messed up again. Everyone else has their life together except me.',
+                mindfulness: 'Notice the sting of disappointment right now without exaggerating it into a permanent identity.',
+                commonHumanity: 'Making mistakes and feeling behind is part of the shared human condition—not proof that you are broken.',
+                selfKindness: 'Speak to yourself like a dear friend: you did the best you could with the energy and awareness you had.',
+                healingMantra: 'May I forgive myself for being imperfectly human today, and begin again with gentleness.'
+            },
+            {
+                category: 'Burnout & Rest Guilt',
+                criticVoice: 'I am being lazy and unproductive. I shouldn’t need this much rest.',
+                mindfulness: 'Acknowledge that exhaustion is a physical signal from your nervous system, not a moral failing.',
+                commonHumanity: 'Every living organism in nature has seasons of winter and recovery; no human is built to produce endlessly.',
+                selfKindness: 'Your worth is inherent to your being, never measured by how many boxes you check off today.',
+                healingMantra: 'Resting is how my body heals. I am worthy of peace even when I am standing still.'
+            },
+            {
+                category: 'Emotional Vulnerability',
+                criticVoice: 'I am too sensitive. I should be over this feeling by now.',
+                mindfulness: 'Allow the wave of emotion to exist without judging yourself for having feelings in the first place.',
+                commonHumanity: 'Deep sensitivity is the exact same neural capacity that allows humans to love, create, and empathize.',
+                selfKindness: 'Healing does not follow a linear calendar. Offer your heart patience instead of a deadline.',
+                healingMantra: 'My sensitivity is my superpower. It is safe for me to feel deeply and heal at my own pace.'
+            }
+        ],
+
+        get currentQuadrant() {
+            return this.quadrants[this.selectedQuadrantIndex] || this.quadrants[0];
+        },
+        get currentEmotion() {
+            return this.currentQuadrant.emotions[this.selectedEmotionIndex] || this.currentQuadrant.emotions[0];
+        },
+        get currentReframe() {
+            return this.reframes[this.selectedReframeIndex] || this.reframes[0];
+        },
+        selectQuadrant(index) {
+            this.selectedQuadrantIndex = index;
+            this.selectedEmotionIndex = 0;
+        }
+    };
+}
+</script>

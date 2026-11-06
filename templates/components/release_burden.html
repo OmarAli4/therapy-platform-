@@ -16,7 +16,7 @@
         <span class="px-3.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 text-[11px] font-semibold uppercase tracking-wider border border-emerald-800/50 inline-block">
             🍃 Interactive Release Ritual
         </span>
-        <h2 class="font-serif text-2xl sm:text-4xl font-bold text-stone-100 tracking-tight">
+        <h2 class="font-heading text-2xl sm:text-4xl font-bold text-stone-100 tracking-tight">
             Release Your Burden
         </h2>
         <p class="text-xs sm:text-sm text-stone-300 font-light">
@@ -53,7 +53,7 @@
 
             <textarea x-model="burdenText" 
                       rows="3" 
-                      class="w-full p-3.5 rounded-xl border border-emerald-900/60 focus:border-emerald-500 text-xs text-stone-100 bg-[#121A18]/80 outline-none leading-relaxed font-serif italic" 
+                      class="w-full p-3.5 rounded-xl border border-emerald-900/60 focus:border-emerald-500 text-xs text-stone-100 bg-[#121A18]/80 outline-none leading-relaxed font-sans" 
                       placeholder="Or write custom thoughts here..."></textarea>
         </div>
 
@@ -114,7 +114,7 @@
                 <span class="text-5xl" x-text="metaphorIcons[selectedMetaphor]"></span>
             </div>
 
-            <blockquote class="font-serif italic text-base text-stone-100 max-w-sm mx-auto leading-relaxed bg-[#121A18]/80 p-4 rounded-xl border border-white/10 shadow-lg">
+            <blockquote class="font-sans font-medium text-base text-stone-100 max-w-sm mx-auto leading-relaxed bg-[#121A18]/80 p-4 rounded-xl border border-white/10 shadow-lg">
                 "<span x-text="burdenText"></span>"
             </blockquote>
         </div>
@@ -127,7 +127,7 @@
         </div>
 
         <div class="space-y-2">
-            <h3 class="font-serif font-bold text-2xl text-stone-100">It is released.</h3>
+            <h3 class="font-heading font-bold text-2xl text-stone-100">It is released.</h3>
             <p class="text-xs text-stone-200 leading-relaxed font-light">
                 You do not have to carry this burden alone anymore. Take a deep, slow breath into your belly. Your hands are lighter now.
             </p>

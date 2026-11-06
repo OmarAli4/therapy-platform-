@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Calming Room | Sanctuary Passwordless Rest Space{% endblock %}
+{% block title %}Calming Room | KindSoul Passwordless Rest Space{% endblock %}
 
 {% block content %}
 <div class="py-12 bg-gradient-to-b from-[#1D2B26] via-[#222F2A] to-[#1D2B26] min-h-screen">
@@ -9,21 +9,24 @@
         <!-- Header Banner -->
         <div class="text-center space-y-4 max-w-2xl mx-auto">
             <span class="px-4 py-1.5 rounded-full bg-[#2D6B52]/20 text-[#6BAF8A] text-xs font-semibold uppercase tracking-wider border border-[#2D6B52]/40">
-                🕊️ Open Sanctuary Calming Room
+                🕊️ Open KindSoul Calming Room
             </span>
-            <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[#E8EEF0] leading-tight">
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold text-[#E8EEF0] leading-tight">
                 No passwords. No login. <br />
-                <span class="italic font-normal text-[#6BAF8A]">Just space to breathe.</span>
+                <span class="font-semibold text-[#6BAF8A]">Just space to breathe.</span>
             </h1>
             <p class="text-[#8A9EA8] text-base leading-relaxed">
-                Welcome to our open sanctuary room. Whether you have 2 minutes between tasks or need an immediate moment of quiet, you are welcome here exactly as you are.
+                Welcome to our open KindSoul calming room. Whether you have 2 minutes between tasks or need an immediate moment of quiet, you are welcome here exactly as you are.
             </p>
         </div>
 
         <!-- Dr. Wessam's Mindful Micro-Rituals Generator -->
         {% include 'components/micro_rituals.html' %}
 
-        <!-- Sanctuary Atmospheric Soundscapes & Wave Visualizer -->
+        <!-- KindSoul Emotional Intelligence (RULER) & Self-Compassion Compass -->
+        {% include 'components/eq_empathy_compass.html' %}
+
+        <!-- KindSoul Atmospheric Soundscapes & Wave Visualizer -->
         {% include 'components/atmospheric_soundscapes.html' %}
 
         <!-- Wall of Gentle Kindness -->
@@ -42,7 +45,7 @@
             <div class="md:col-span-6 bg-[#222F2A]/90 backdrop-blur-md rounded-3xl p-6 border border-[#344A40] shadow-md space-y-5">
                 <div class="flex items-center space-x-2">
                     <span class="text-[#6BAF8A] text-lg">🎧</span>
-                    <h2 class="font-serif font-bold text-xl text-[#E8EEF0]">Guided Somatic Grounding</h2>
+                    <h2 class="font-heading font-bold text-xl text-[#E8EEF0]">Guided Somatic Grounding</h2>
                 </div>
                 <p class="text-xs text-[#8A9EA8]">Listen to Dr. Wessam's 3-minute somatic reset or watch the soothing visual wave guide.</p>
 
@@ -53,7 +56,7 @@
                             ▶
                         </div>
                         <div>
-                            <p class="font-serif font-bold text-xs text-[#E8EEF0]">3-Minute Somatic Reset</p>
+                            <p class="font-heading font-bold text-xs text-[#E8EEF0]">3-Minute Somatic Reset</p>
                             <p class="text-[11px] text-[#6BAF8A]">Dr. Wessam</p>
                         </div>
                     </div>
@@ -67,7 +70,7 @@
 
                 <div class="pt-2 border-t border-[#344A40] flex justify-between items-center text-xs">
                     <span class="text-[#8A9EA8]">Low-pressure audio guidance</span>
-                    <button type="button" @click="openModal()" class="text-[#6BAF8A] font-semibold hover:underline">
+                    <button type="button" @click="$dispatch('open-grounding')" class="text-[#D4A55A] font-bold hover:underline">
                         Open 4-7-8 Breathing Ring →
                     </button>
                 </div>
@@ -80,7 +83,7 @@
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-2">
                         <span class="text-[#6BAF8A] text-lg">📝</span>
-                        <h2 class="font-serif font-bold text-xl text-[#E8EEF0]">Private Calming Scratchpad</h2>
+                        <h2 class="font-heading font-bold text-xl text-[#E8EEF0]">Private Calming Scratchpad</h2>
                     </div>
                     <span class="text-[11px] text-[#6BAF8A] font-semibold" x-text="saveStatus"></span>
                 </div>
@@ -111,7 +114,7 @@
                 <span class="px-3 py-1 rounded-full bg-[#1A2420]/40 text-[#D4A55A] text-xs font-semibold uppercase tracking-wider border border-white/10">
                     Self-Paced Learning
                 </span>
-                <h3 class="font-serif text-2xl font-bold text-white">Explore Our Free Grounding Modules</h3>
+                <h3 class="font-heading text-2xl font-bold text-white">Explore Our Free Grounding Modules</h3>
                 <p class="text-xs text-emerald-100/80 max-w-lg">
                     When you're ready for structured modules, explore our video lessons on reframing anxious thoughts and somatic grounding.
                 </p>

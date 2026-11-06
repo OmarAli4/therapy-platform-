@@ -51,6 +51,14 @@ class Appointment(models.Model):
         on_delete=models.CASCADE,
         related_name='appointments'
     )
+    therapist = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'THERAPIST'},
+        related_name='therapist_appointments',
+        null=True,
+        blank=True
+    )
     focus_area = models.CharField(
         max_length=50,
         choices=FocusArea.choices,
@@ -77,4 +85,5 @@ class Appointment(models.Model):
         ordering = ['date', 'start_time']
 
     def __str__(self):
-        return f"Appointment with {self.client} on {self.date} at {self.start_time.strftime('%H:%M')}"
+        therapist_name = self.therapist.get_full_name() if self.therapist else "Therapist"
+        return f"Appointment with {therapist_name} for {self.client} on {self.date} at {self.start_time.strftime('%H:%M')}"

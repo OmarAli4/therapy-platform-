@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sanctuary | Empathetic Therapy & Mindful Learning{% endblock %}</title>
+    <title>{% block title %}KindSoul | Empathetic Therapy & Mindful Learning{% endblock %}</title>
 
-    <!-- Google Fonts: Playfair Display (Serif) & Plus Jakarta Sans (Body) -->
+    <!-- Google Fonts: Outfit (Modern Headings) & Inter (Clear UI/Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,9 +17,9 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-                        heading: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+                        serif: ['"Outfit"', '"Inter"', 'system-ui', 'sans-serif'],
+                        heading: ['"Outfit"', '"Inter"', 'system-ui', 'sans-serif'],
                     },
                     colors: {
                         forest: {
@@ -87,9 +87,16 @@
             animation: gentleFloat 6s ease-in-out infinite;
         }
 
-        /* Serif headings override */
-        h1, h2, h3, .font-serif-heading {
-            font-family: 'Playfair Display', Georgia, serif;
+        /* Modern clear typography system */
+        body, input, textarea, select, button {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.01em;
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading, .font-serif, .font-serif-heading {
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            letter-spacing: -0.02em;
         }
     </style>
     {% block extra_head %}{% endblock %}

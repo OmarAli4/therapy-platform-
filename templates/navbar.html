@@ -14,7 +14,7 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="font-serif font-bold text-xl text-[#E8EEF0] tracking-tight block">Sanctuary</span>
+                        <span class="font-heading font-bold text-xl text-[#E8EEF0] tracking-tight block">KindSoul</span>
                         <span class="text-[11px] text-[#6BAF8A] font-semibold tracking-wide block -mt-0.5">Therapy & Mindful Growth</span>
                     </div>
                 </a>
@@ -41,7 +41,7 @@
                         </a>
                     {% else %}
                         <a href="{% url 'dashboard' %}" class="px-4 py-2 text-sm font-semibold text-[#E8EEF0] bg-[#2D6B52]/20 rounded-xl hover:bg-[#2D6B52]/30 border border-[#2D6B52]/40">
-                            My Sanctuary Dashboard
+                            My KindSoul Dashboard
                         </a>
                     {% endif %}
 
@@ -103,6 +103,7 @@
     <!-- Mobile Navigation Drawer -->
     <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-[#1A2420] border-b border-[#2A3832] px-4 pt-2 pb-6 space-y-3">
         <a href="{% url 'landing' %}" class="block py-2 text-[#E8EEF0] font-medium">Home</a>
+        <button type="button" @click="mobileMenuOpen = false; $dispatch('open-grounding')" class="w-full text-left py-2 text-[#D4A55A] font-semibold">🫁 4-7-8 Breathing Timer</button>
         <a href="{% url 'calm_space' %}" class="block py-2 text-[#6BAF8A] font-semibold">🕊️ Calming Room</a>
         <a href="{% url 'book_session' %}" class="block py-2 text-[#D5DED8] font-medium">Book Session</a>
         <a href="{% url 'course_list' %}" class="block py-2 text-[#D5DED8] font-medium">Self-Paced Courses</a>
